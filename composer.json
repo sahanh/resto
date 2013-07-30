@@ -1,0 +1,26 @@
+{
+	"name": "sahanz/resto",
+    "type": "library",
+    "description": "Resto is an ORM for REST like webservices",
+    "keywords": ["ormd", "rest", "web service"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sahan H",
+            "email": "sahan@sahanz.com",
+            "homepage": "https://github.com/sahanz"
+        },
+        {
+            "name": "Community",
+            "homepage": "https://github.com/sahanz/resto/contributors"
+        }
+    ],
+	"require" : {
+		"guzzle/guzzle": "3.7.1"
+	},
+	"autoload": {
+        "psr-0": {
+            "Resto": "src/"
+        }
+    }
+}
