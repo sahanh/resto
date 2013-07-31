@@ -26,6 +26,16 @@ class Str {
 	}
 
 	/**
+	 * Generate collection path from a class name
+	 * @param  string $class
+	 * @return string       
+	 */
+	public static function collectionPath($class)
+	{
+		return strtolower(static::plural(static::classBasename($class)));
+	}
+
+	/**
 	 * Get class base
 	 */
 	public static function classBasename($class)

@@ -127,7 +127,7 @@ class Model
 	public function getCollectionPath()
 	{
 		if (!$this->collection_path)
-			return strtolower(Str::plural(Str::classBasename(get_called_class())));
+			return Str::collectionPath(get_called_class());
 		else
 			return $this->collection_path;
 	}
