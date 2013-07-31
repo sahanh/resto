@@ -20,6 +20,11 @@ class Str {
 		return Pluralizer::plural($value, $count);
 	}
 
+	public static function singular($value)
+	{
+		return Pluralizer::singular($value);
+	}
+
 	/**
 	 * Get class base
 	 */
