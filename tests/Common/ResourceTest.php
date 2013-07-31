@@ -41,4 +41,17 @@ class CommonResourceTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $resource);	
 	}
 
+	/**
+	 * Checking Resource::getNamespace()
+	 * @return [type] [description]
+	 */
+	public function testResourceGetNamespace()
+	{
+		$res1 = Resource::register('Foo\\Bar');
+		$res2 = Resource::register('Bar');
+
+		$this->assertEquals('Foo\\Bar', $res1->getNamespace());
+		$this->assertEquals('Bar', $res2->getNamespace());
+	}
+
 }

@@ -49,7 +49,7 @@ class Resource
 	 */
 	public static function resolve($namespace)
 	{
-		$namespace = static::getNamespace($namespace);
+		$namespace = static::extractNamespaceFromClass($namespace);
 
 		if (!$namespace)
 			throw new InvalidResourceException('Model must be inside a namespace.');
@@ -81,11 +81,20 @@ class Resource
 	}
 
 	/**
+	 * Get namespace of resource instance
+	 * @return string
+	 */
+	public function getNamespace()
+	{
+		return $this->namespace;
+	}
+
+	/**
 	 * Extract the namespace out of fully qualified class name
 	 * @param  string $class
 	 * @return mixed
 	 */
-	protected static function getNamespace($class)
+	protected static function extractNamespaceFromClass($class)
 	{
 		if (strpos($class, '\\') === false)
 			return false;
