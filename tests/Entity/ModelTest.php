@@ -2,20 +2,25 @@
 
 class ModelTest extends PHPUnit_Framework_TestCase
 {
-
-	public function testGetResourceSlug()
+	public function testSetAttributeWithoutMutator()
 	{
-		$model  = new SampleModel;
-		$return = static::callProtectedMethod('SampleModel', $model, 'getResourceSlug');
-		$this->assertEquals('samplemodels', $return);
+		$model = new SampleModel;
+
+		$model->id         = 2;
+		$model->first_name = 'Sahan';
+		$model->last_name  = 'H';
+
+		$this->assertAttributeEquals(array('id' => 2, 'first_name' => 'Sahan', 'last_name' => 'H'), 'attributes', $model);
 	}
 
-	protected static function callProtectedMethod($class, $object, $method_name, $params = array())
+	public function testSetAttributeWithMutator()
 	{
-		$reflection = new ReflectionClass($class);
-		$reflection_method = $reflection->getMethod($method_name);
-		$reflection_method->setAccessible(true);
 		
-		return $reflection_method->invokeArgs($object, $params);
+	}
+
+	public function testEntityPath()
+	{
+		$model = new SampleModel;
+		$this->assertEquals($model->getEntityPath(), 'samplemodels');
 	}
 }
