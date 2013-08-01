@@ -15,6 +15,7 @@ require __DIR__.'/vendor/autoload.php';
 
 require __DIR__.'/tests/mocks/SampleModel.php';
 require __DIR__.'/tests/mocks/SampleModelNamespaced.php';
+require __DIR__.'/tests/mocks/SampleModelWithRelation.php';
 
 /*
 |--------------------------------------------------------------------------
