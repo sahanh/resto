@@ -151,10 +151,29 @@ class Model
 
 	public function hasMany($class, $path = false)
 	{
+		return $this->generateRelation('HasMany', $class, $path);
+	}
+
+	public function hasOne($class, $path = false)
+	{
+		return $this->generateRelation('HasOne', $class, $path);
+	}
+
+	protected function generateRelation($type, $class, $path)
+	{
 		$namespace = static::getResource()->getNamespace();
 		$fqclass   = "{$namespace}\\{$class}";
 
-		return new HasMany($fqclass, $this, $path);
+		switch ($type) {
+			case 'HasMany':
+					return new HasMany($fqclass, $this, $path);
+				break;
+			
+			case 'HasOne':
+					return new HasOne($fqclass, $this, $path);
+				break;
+		}
+			
 	}
 
 	public function __set($property, $value)

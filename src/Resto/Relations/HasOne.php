@@ -12,7 +12,8 @@ class HasOne extends Relation
 		$caller_path    = $this->getCallingModel()->getEntityPath();
 
 		//ie:- posts
-		$relatives_path = $this->getRelatingModel()->getCollectionPath();
+		$relatives_path = Str::collectionPath($this->getRelatingModel());
+		
 		//since it's one to one, relation path should be singular
 		$relatives_path = Str::singular($relatives_path);
 
