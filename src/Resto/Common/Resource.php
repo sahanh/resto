@@ -26,7 +26,7 @@ class Resource
 	/**
 	 * @param string $namespace
 	 */
-	public function __construct($namespace)
+	protected function __construct($namespace)
 	{
 		$this->namespace = $namespace;
 	}
@@ -80,6 +80,11 @@ class Resource
 		return $this;
 	}
 
+	public function getEndPoint()
+	{
+		return $this->endpoint;
+	}
+
 	/**
 	 * Get namespace of resource instance
 	 * @return string
@@ -87,6 +92,16 @@ class Resource
 	public function getNamespace()
 	{
 		return $this->namespace;
+	}
+
+	/**
+	 * Get a new Resto\Common\Query instance
+	 * Resource class will set base url etc
+	 * @return Resto\Common\Query
+	 */
+	public function getQuery()
+	{
+		return new Query($this->getEndPoint());
 	}
 
 	/**
