@@ -154,7 +154,7 @@ class Model
 		$namespace = static::getResource()->getNamespace();
 		$fqclass   = "{$namespace}\\{$class}";
 
-		return new HasMany($fqclass, $this);
+		return new HasMany($fqclass, $this, $path);
 	}
 
 	public function __set($property, $value)
