@@ -10,7 +10,7 @@ class Query
 	protected $model;
 
 	/**
-	 * API Resource
+	 * Resource
 	 * @var string
 	 */
 	protected $resource;
