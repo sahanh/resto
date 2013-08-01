@@ -13,8 +13,11 @@ class RequestTest extends PHPUnit_Framework_TestCase
 	public function testSetPath()
 	{
 		$request = $this->request;
-		$request->setPath('users/2/posts');
 		
+		$request->setPath('users/2/posts');
+		$this->assertAttributeEquals('users/2/posts', 'path', $request);
+
+		$request->setPath('/users/2/posts');
 		$this->assertAttributeEquals('users/2/posts', 'path', $request);
 	}
 
