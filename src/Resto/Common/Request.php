@@ -4,6 +4,9 @@
  */
 namespace Resto\Common;
 
+use Closure;
+use Guzzle\Http\Client as HttpClient;
+
 class Request
 {
 	/**
@@ -44,13 +47,32 @@ class Request
 	protected $path;
 
 	/**
-	 * Query params
+	 * Guzzle client
+	 */
+	protected $client;
+
+	/**
+	 * Callbacks
+	 */
+	protected $callbacks = array(
+		'initiateHttpClient' => false,
+		'beforeRequest'      => false,
+		'afterRequest'       => false
+	);
+
+	/**
+	 * URL query params
 	 */
 	protected $params = array();
 
-	public function __construct($endpoint)
+	public function __construct($endpoint, $options = array())
 	{
 		$this->endpoint = $endpoint;
+		$this->client   = new HttpClient($this->endpoint);
+		
+		if (isset($options['callbacks'])) {
+			$this->setCallbacks($options['callbacks']);
+		}
 	}
 
 	/**
@@ -59,7 +81,7 @@ class Request
 	 */
 	public function setPath($path)
 	{
-		$this->path = $path;
+		$this->path = ltrim($path, '/');
 		return $this;
 	}
 
@@ -121,15 +143,56 @@ class Request
 
 	public function execute()
 	{
+		$http_method = strtolower($this->method);
 
+		$client  = $this->getClient();
+
+		$this->invokeCallback('initiateHttpClient', array($this, $client));
+
+		$request     = $client->$http_method($this->buildPath());
+		$request->getQuery()->merge($this->params);
+
+		$this->invokeCallback('beforeRequest', array($this, $request));
+
+		$response    = $request->send();
+
+		$this->invokeCallback('afterRquest', array($this, $response));
+
+		return $response;
 	}
+
+	public function getClient()
+	{
+		return $this->client;
+	}
+
+	/**
+	 * Set callbacks from an array
+	 * @param array $callbacks
+	 */
+	public function setCallbacks($callbacks)
+	{
+		$this->callbacks = $callbacks;
+		return $this;
+	}
+
+
+	protected function invokeCallback($method, $params = array())
+	{
+		if (isset($this->callbacks[$method]) and $this->callbacks[$method] instanceOf Closure) {
+			call_user_func_array($this->callbacks[$method], $params);
+		} else {
+			return false;
+		}
+	}
+
 
 	/**
 	 * Build final url for the request. (without query params)
 	 * @return string
 	 */
-	protected function buildUrl()
+	protected function buildPath()
 	{
-		return implode('/', array($this->endpoint, $this->path));
+		return $this->path;
 	}
 }
