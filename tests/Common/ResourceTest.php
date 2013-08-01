@@ -65,4 +65,14 @@ class CommonResourceTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('Closure', $res->getCallback('initiateRequest'));
 	}
 
+	public function testGetRequest()
+	{
+		$res = Resource::register('Foo\\Bar');
+		$res->setEndPoint('https://example.com/');
+
+		$req = $res->getRequest();
+
+		$this->assertAttributeEquals('https://example.com', 'endpoint', $req); //endpoint should remove end /
+	}
+
 }

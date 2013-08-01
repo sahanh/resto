@@ -112,6 +112,15 @@ class Resource
 	}
 
 	/**
+	 * Get a Request object
+	 * @return Resto\Common\Request
+	 */
+	public function getRequest()
+	{
+		return new Request($this->endpoint);
+	}
+	
+	/**
 	 * Set a callback
 	 * @param string  $name
 	 * @param Closure $callback
