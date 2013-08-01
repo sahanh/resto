@@ -1,4 +1,5 @@
 <?php
+use Closure;
 use Resto\Common\Resource;
 use Foo\Bar\SampleModel as NamespacedModel;
 
@@ -52,6 +53,16 @@ class CommonResourceTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals('Foo\\Bar', $res1->getNamespace());
 		$this->assertEquals('Bar', $res2->getNamespace());
+	}
+
+	public function testCallbackGetSet()
+	{
+		$res = Resource::register('Foo\\Bar');
+		$res->setCallback('initiateRequest', function(){
+			return 'foo';	
+		});
+
+		$this->assertInstanceOf('Closure', $res->getCallback('initiateRequest'));
 	}
 
 }

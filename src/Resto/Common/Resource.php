@@ -1,6 +1,7 @@
 <?php
 namespace Resto\Common;
 
+use Closure;
 use Resto\Exception\InvalidResourceException;
 
 class Resource
@@ -22,6 +23,12 @@ class Resource
 	 * @var [type]
 	 */
 	protected $namespace;
+
+	/**
+	 * Hold callbacks
+	 * @var array
+	 */
+	protected $callbacks = array();
 
 	/**
 	 * @param string $namespace
@@ -102,6 +109,30 @@ class Resource
 	public function getQuery()
 	{
 		return new Query($this);
+	}
+
+	/**
+	 * Set a callback
+	 * @param string  $name
+	 * @param Closure $callback
+	 */
+	public function setCallback($name, Closure $callback)
+	{
+		$this->callbacks[$name] = $callback;
+		return $this;
+	}
+
+	/**
+	 * Get callback
+	 * @param  [type] $name
+	 * @return Closure|bool
+	 */
+	public function getCallback($name)
+	{
+		if (isset($this->callbacks[$name]))
+			return $this->callbacks[$name];
+		else
+			return false;
 	}
 
 	/**
