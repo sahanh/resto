@@ -156,7 +156,7 @@ class Request
 
 		$response    = $request->send();
 
-		$this->invokeCallback('afterRquest', array($this, $response));
+		$this->invokeCallback('afterRequest', array($this, $response));
 
 		return $response;
 	}
