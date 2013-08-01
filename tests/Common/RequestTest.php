@@ -1,4 +1,6 @@
 <?php
+
+use ReflectionClass;
 use Resto\Common\Request;
 
 class RequestTest extends PHPUnit_Framework_TestCase
@@ -49,5 +51,29 @@ class RequestTest extends PHPUnit_Framework_TestCase
 		$request->removeParam('foo');
 
 		$this->assertAttributeEquals(array('name' => 'john', 'last' => 'doe'), 'params', $request);
+	}
+
+	public function testBuildPath()
+	{
+		$request = $this->request;
+		$request->setPath('users/2/posts');
+
+		$class   = new ReflectionClass('Resto\Common\Request');
+		$method  = $class->getMethod('buildPath');
+		$method->setAccessible(true);
+
+		$path  = $method->invokeArgs($this->request, array());
+		$this->assertEquals('users/2/posts', $path);
+
+		$request->setPathExt('json');
+
+		$path  = $method->invokeArgs($this->request, array());
+		$this->assertEquals('users/2/posts.json', $path);
+
+		//just checking to see if it removes the ., doesn't support xml
+		$request->setPathExt('.xml');
+
+		$path  = $method->invokeArgs($this->request, array());
+		$this->assertEquals('users/2/posts.xml', $path);
 	}
 }

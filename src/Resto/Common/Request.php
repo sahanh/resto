@@ -32,7 +32,7 @@ class Request
 	/**
 	 * API response format, ie:- json
 	 */
-	protected $format;
+	protected $format = 'json';
 
 	/**
 	 * HTTP Method for current request, GET/POST/PUT/DELETE
@@ -45,6 +45,12 @@ class Request
 	 * @var string
 	 */
 	protected $path;
+
+	/**
+	 * Path ext, will be amended to final path, ie:- api.com/users.json
+	 * @var string
+	 */
+	protected $path_ext;
 
 	/**
 	 * Guzzle client
@@ -85,13 +91,14 @@ class Request
 		return $this;
 	}
 
+
 	/**
 	 * Set up an extension to request, ie: .json in api.twitter/tweets.json
 	 * @param [type] $format [description]
 	 */
-	public function setPathExt($format)
+	public function setPathExt($path_ext)
 	{
-		$this->format = $format;
+		$this->path_ext = '.'.ltrim($path_ext, '.');
 		return $this;
 	}	
 
@@ -158,7 +165,7 @@ class Request
 
 		$this->invokeCallback('afterRequest', array($this, $response));
 
-		return $response;
+		return $response->{$this->format}();
 	}
 
 	public function getClient()
@@ -193,6 +200,6 @@ class Request
 	 */
 	protected function buildPath()
 	{
-		return $this->path;
+		return implode('', array($this->path, $this->path_ext));
 	}
 }
