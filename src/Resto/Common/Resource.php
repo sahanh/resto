@@ -101,7 +101,7 @@ class Resource
 	 */
 	public function getQuery()
 	{
-		return new Query($this->getEndPoint());
+		return new Query($this);
 	}
 
 	/**

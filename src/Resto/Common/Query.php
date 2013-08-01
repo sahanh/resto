@@ -10,19 +10,22 @@ class Query
 	protected $model;
 
 	/**
-	 * API URL
+	 * API Resource
 	 * @var string
 	 */
-	protected $endpoint;
+	protected $resource;
 
 	/**
 	 * Path
 	 */
 	protected $path;
 
-	public function __construct($url)
+	/**
+	 * @param Resource $resource
+	 */
+	public function __construct($resource)
 	{
-		$this->endpoint = $url;
+		$this->resource = $resource;
 	}
 
 	public function setPath($path)
