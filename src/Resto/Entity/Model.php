@@ -159,6 +159,14 @@ class Model
 		return $this->generateRelation('HasOne', $class, $path);
 	}
 
+	/**
+	 * Build a relation object, used by hasMany, hasOne, belongsTo helpers.
+	 * On initiate, it will append the current namespace to relating class.
+	 * @param  string $type  - type of the relation, the class name of Relation, HasOne, HasMany, Belongs to, under Resto\Relation\..
+	 * @param  string $class - relating clas name
+	 * @param  string $path  - custom query path
+	 * @return Resto\Relation
+	 */
 	protected function generateRelation($type, $class, $path)
 	{
 		$namespace = static::getResource()->getNamespace();
