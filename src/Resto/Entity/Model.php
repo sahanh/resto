@@ -6,6 +6,8 @@ namespace Resto\Entity;
 
 use Resto\Common\Str;
 use Resto\Common\Resource;
+use Resto\Parser\DefaultParser;
+
 use Resto\Relations\HasMany;
 use Resto\Relations\HasOne;
 use Resto\Relations\BelongsTo;
@@ -21,20 +23,28 @@ class Model
 	 * Unique identifier key
 	 * @var string
 	 */
-	protected $key = 'id';
+	protected static $key = 'id';
 	
-	protected $attributes = array();
-
 	/**
 	 * Valid attributes for the entity.
 	 * If specified, will be filtered before doing the API request
 	 * @var [type]
 	 */
-	protected $fillable   = array();
+	protected static $fillable   = array();
+		
+	protected $attributes = array();
 
-	public static function find()
+
+	public static function find($id)
 	{
+		$model = new static;
+		$model->id = $id;
 
+		$query = static::query();
+		$query->setModel(__CLASS__);
+		$query->setPath($model->getEntityPath());
+
+		return $query->first();
 	}
 
 	/**
@@ -52,17 +62,28 @@ class Model
 	 */
 	public static function query()
 	{
-
+		return static::getResource()->getQuery();
 	}
 
 	/**
 	 * Fill and make a model
 	 * @param  array $data
 	 */
-	protected function fill(Array $data)
+	public function fill(array $data)
 	{
 		foreach ($data as $key => $value)
 			$this->setAttribute($key, $value);
+
+		return $this;
+	}
+
+	public function fillRaw(array $array)
+	{
+		foreach($array as $key => $value) {
+			$this->attributes[$key] = $value;
+		}
+
+		return $this;
 	}
 
 	/**
@@ -73,9 +94,9 @@ class Model
 	public function setAttribute($key, $value)
 	{	
 		$mutator_method = $this->generateSetMutatorName($key);
-		
+
 		if (method_exists($this, $mutator_method))
-			$this->$mutator_method($key, $value);
+			$this->$mutator_method($value);
 		else
 			$this->attributes[$key] = $value;	
 	}
@@ -90,9 +111,9 @@ class Model
 		$mutator_method = $this->generateGetMutatorName($key);
 		
 		if (method_exists($this, $mutator_method)) {
-			return $this->$mutator_method($key);
+			return $this->$mutator_method($value);
 		} else {
-			if (array_key_exists($key, $this->attributes));
+			if (array_key_exists($key, $this->attributes))
 				return $this->attributes[$key];
 		}
 			
@@ -142,8 +163,8 @@ class Model
 	{
 		$parts   = array();
 		$parts[] = $this->getCollectionPath();
-		
-		if ($entity_id = $this->{$this->key})
+
+		if ($entity_id = $this->{static::$key})
 			$parts[] = $entity_id;
 
 		return implode('/', $parts);
@@ -157,6 +178,15 @@ class Model
 	public function hasOne($class, $path = false)
 	{
 		return $this->generateRelation('HasOne', $class, $path);
+	}
+
+	/**
+	 * Return Parser
+	 * @return [type] [description]
+	 */
+	public static function getParser($response)
+	{
+		return new DefaultParser($response);
 	}
 
 	/**
