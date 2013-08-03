@@ -3,6 +3,7 @@ namespace Resto\Common;
 
 use Closure;
 use Resto\Exception\InvalidResourceException;
+use Resto\Common\Helpers as H;
 
 class Resource
 {
@@ -117,7 +118,7 @@ class Resource
 	 */
 	public function getRequest()
 	{
-		return new Request($this->endpoint);
+		return new Request($this->endpoint, array('callbacks' => $this->callbacks));
 	}
 	
 	/**
@@ -138,10 +139,7 @@ class Resource
 	 */
 	public function getCallback($name)
 	{
-		if (isset($this->callbacks[$name]))
-			return $this->callbacks[$name];
-		else
-			return false;
+		return H::arrayGet($this->callbacks, $name, false);
 	}
 
 	/**
