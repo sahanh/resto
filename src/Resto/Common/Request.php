@@ -9,10 +9,6 @@ use Guzzle\Http\Client as HttpClient;
 
 class Request
 {
-	/**
-	 * Return formats
-	 */
-	const FORMAT_JSON = 'json';
 
 	/**
 	 * HTTP methods
@@ -28,11 +24,6 @@ class Request
 	 * @var string
 	 */
 	protected $endpoint;
-
-	/**
-	 * API response format, ie:- json
-	 */
-	protected $format = 'json';
 
 	/**
 	 * HTTP Method for current request, GET/POST/PUT/DELETE
@@ -80,22 +71,7 @@ class Request
 			$this->setCallbacks($options['callbacks']);
 		}
 	}
-
-	/**
-	 * Set expected request format, use class constats, static::FORMAT_JSON
-	 * @param string
-	 */
-	public function setFormat($format)
-	{
-		$this->format = $format;
-		return $this;
-	}
-
-	public function getFormat()
-	{
-		return $this->format;
-	}
-
+	
 	/**
 	 * Set path, will be amended with base path
 	 * @param string $path
@@ -180,7 +156,7 @@ class Request
 
 		$this->invokeCallback('afterRequest', array($this, $response));
 
-		return $response->{$this->format}();
+		return $response;
 	}
 
 	public function getClient()
