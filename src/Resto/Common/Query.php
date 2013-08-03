@@ -1,6 +1,8 @@
 <?php
 namespace Resto\Common;
 
+use Resto\Entity\Collection;
+
 class Query
 {
 	/**
@@ -16,6 +18,12 @@ class Query
 	protected $resource;
 
 	/**
+	 * Request
+	 * @var string
+	 */
+	protected $request;
+
+	/**
 	 * Path
 	 */
 	protected $path;
@@ -26,6 +34,7 @@ class Query
 	public function __construct($resource)
 	{
 		$this->resource = $resource;
+		$this->request  = $resource->getRequest();
 	}
 
 	public function setPath($path)
@@ -46,13 +55,34 @@ class Query
 	 */
 	public function get()
 	{
-		//get results
-		//loop and created model
-		return array();
+		$parsed_data = $this->execute();
+
+		$models = array();
+		foreach ($parsed_data->getData() as $model_data) {
+			$model = new $this->model;
+			$model->fillRaw($model_data);
+			$models[] = $model;
+		}
+
+		return new Collection($models, $parsed_data->getMeta());
 	}
 
 	public function first()
 	{
-		//get array pop
+		return $this->get()->first();
+	}
+
+	protected function execute()
+	{
+		$request = $this->request;
+		$request->setMethod(Request::METHOD_GET);
+		$request->setPath($this->path);
+
+		return $this->getModelParser($request->execute());
+	}
+
+	protected function getModelParser($response)
+	{
+		return call_user_func_array("{$this->model}::getParser", array($response));
 	}
 }
