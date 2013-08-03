@@ -82,6 +82,21 @@ class Request
 	}
 
 	/**
+	 * Set expected request format, use class constats, static::FORMAT_JSON
+	 * @param string
+	 */
+	public function setFormat($format)
+	{
+		$this->format = $format;
+		return $this;
+	}
+
+	public function getFormat()
+	{
+		return $this->format;
+	}
+
+	/**
 	 * Set path, will be amended with base path
 	 * @param string $path
 	 */
