@@ -5,6 +5,8 @@
 namespace Resto\Common;
 
 use Closure;
+use Exception;
+use Resto\Exception\RequestException;
 use Guzzle\Http\Client as HttpClient;
 
 class Request
@@ -141,22 +143,28 @@ class Request
 
 	public function execute()
 	{
-		$http_method = strtolower($this->method);
+		try {
 
-		$client  = $this->getClient();
+			$http_method = strtolower($this->method);
 
-		$this->invokeCallback('initiateHttpClient', array($this, $client));
+			$client  = $this->getClient();
 
-		$request     = $client->$http_method($this->buildPath());
-		$request->getQuery()->merge($this->params);
+			$this->invokeCallback('initiateHttpClient', array($this, $client));
 
-		$this->invokeCallback('beforeRequest', array($this, $request));
+			$request     = $client->$http_method($this->buildPath());
+			$request->getQuery()->merge($this->params);
 
-		$response    = $request->send();
+			$this->invokeCallback('beforeRequest', array($this, $request));
 
-		$this->invokeCallback('afterRequest', array($this, $response));
+			$response    = $request->send();
 
-		return $response;
+			$this->invokeCallback('afterRequest', array($this, $response));
+
+			return $response;
+
+		} catch (Exception $e) {
+			throw new RequestException($e->getMessage(), $e->getCode());
+		}
 	}
 
 	public function getClient()
