@@ -103,6 +103,7 @@ class DefaultParser implements ParserInterface
 	/**
 	 * Check the body using specified "data" key and return that data.
 	 * If key doesn't exists, ParserException exception will be thrown
+	 * TODO: refactor logic
 	 * @param  array $body
 	 * @return array
 	 */
@@ -110,13 +111,24 @@ class DefaultParser implements ParserInterface
 	{
 		//if array is not assoc, means it's collection of models. We can use it directly
 		if (!H::arrayIsAssoc($body)) {
-			$this->data = $body;
+			$this->data = array($body);
 		}
 		//it has more data, better check with keys
 		else {
+
+			//response has one key, with one element
+			if ($keys = array_keys($body) and count($keys) < 2) {
+				$key  = array_shift($keys);
+				
+				//get the data out of that one element
+				if ($data = H::arrayGet($body, $key) and H::arrayIsAssoc($data)) {
+					$this->data = array($data);
+					return;
+				}	
+			}
 		
-			if (!array_key_exists($body, $this->getKey('data')))
-				throw new ParserException("Couldn't find data under '{key}', key doesn't exists in response.");
+			if ($key = $this->getKey('data') and !array_key_exists($this->getKey('data'), $body))
+				throw new ParserException("Couldn't find data under '{$key}', key doesn't exists in response.");
 			
 			$data = H::arrayGet($body, $this->getKey('data'));	
 
