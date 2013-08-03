@@ -109,7 +109,7 @@ class DefaultParser implements ParserInterface
 	protected function setDataFromBody($body)
 	{
 		//if array is not assoc, means it's collection of models. We can use it directly
-		if (!H::isAssoc($body)) {
+		if (!H::arrayIsAssoc($body)) {
 			$this->data = $body;
 		}
 		//it has more data, better check with keys
