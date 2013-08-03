@@ -65,6 +65,13 @@ class CommonResourceTest extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('Closure', $res->getCallback('initiateRequest'));
 	}
 
+	public function testNonExistCallbackGet()
+	{
+		$res = Resource::register('Foo\\Bar');
+		$this->assertEquals(false, $res->getCallback('initiateRequest'));
+		$this->assertEquals(false, $res->getCallback('blahblah'));
+	}
+
 	public function testGetRequest()
 	{
 		$res = Resource::register('Foo\\Bar');
