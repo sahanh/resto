@@ -96,15 +96,8 @@ class DefaultParser implements ParserInterface
 		//check and throw errors
 		$this->validateErrorsInBody($body);
 
-		//if array is not assoc, means it's collection of models. We can use it directly
-		if (!H::isAssoc($body)) {
-			$this->setData($body);
-		}
-		//it has more data, better check with keys
-		else {
-			$this->data   = $this->getDataFromBody($body);
-			$this->meta   = $this->getMetaFromBody($body)
-		}
+		$this->setDataFromBody($body);
+		$this->setMetaFromBody($body);
 	}
 
 	/**
@@ -113,12 +106,28 @@ class DefaultParser implements ParserInterface
 	 * @param  array $body
 	 * @return array
 	 */
-	protected function getDataFromBody($body)
+	protected function setDataFromBody($body)
 	{
-		if (!array_key_exists($body, $this->getKey('data')))
-			throw new ParserException("Couldn't find data under '{key}', key doesn't exists in response.");
+		//if array is not assoc, means it's collection of models. We can use it directly
+		if (!H::isAssoc($body)) {
+			$this->data = $body;
+		}
+		//it has more data, better check with keys
+		else {
+		
+			if (!array_key_exists($body, $this->getKey('data')))
+				throw new ParserException("Couldn't find data under '{key}', key doesn't exists in response.");
+			
+			$data = H::arrayGet($body, $this->getKey('data'));	
 
-		return H::arrayGet($body, $key);
+			//need to make sure $this->data is always an array no matter how many elements are there.
+			//Resto\Query will handle single element data
+			if (!is_array($data)) {
+				$this->data = array($data);
+			} else {
+				$this->data = $data;
+			}
+		}
 	}
 
 	/**
@@ -126,7 +135,7 @@ class DefaultParser implements ParserInterface
 	 * @param  array $body
 	 * @return mixed
 	 */
-	public function getMetaFromBody($body)
+	public function setMetaFromBody($body)
 	{
 		if (is_array($this->getKey('meta'))) { //if meta has multiple fields, user is expecting multiple
 
@@ -136,10 +145,10 @@ class DefaultParser implements ParserInterface
 				$meta[$key] = H::arrayGet($body, $key);
 			}
 
-			return $meta;
+			$this->meta = $meta;
 
 		} else {
-			return H::arrayGet($body, $this->getKey('meta'), false);
+			$this->meta = H::arrayGet($body, $this->getKey('meta'), false);
 		}
 	}
 
