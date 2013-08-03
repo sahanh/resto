@@ -3,7 +3,7 @@ namespace Resto\Common;
 
 class Helpers
 {
-	function arrayGet($array, $key, $default = null)
+	public static function arrayGet($array, $key, $default = null)
 	{
 		if (is_null($key)) return $array;
 
@@ -15,7 +15,7 @@ class Helpers
 		{
 			if ( ! is_array($array) or ! array_key_exists($segment, $array))
 			{
-				return value($default);
+				return static::value($default);
 			}
 
 			$array = $array[$segment];
@@ -42,7 +42,7 @@ class Helpers
 	 * @param  mixed   $value
 	 * @return void
 	 */
-	function arraySet(&$array, $key, $value)
+	public static function arraySet(&$array, $key, $value)
 	{
 		if (is_null($key)) return $array = $value;
 
@@ -85,7 +85,7 @@ class Helpers
 	 * @param  string  $key
 	 * @return void
 	 */
-	function arrayForget(&$array, $key)
+	public static function arrayForget(&$array, $key)
 	{
 		$keys = explode('.', $key);
 
@@ -111,4 +111,10 @@ class Helpers
 
 		unset($array[array_shift($keys)]);
 	}
+
+	public static function value($value)
+	{
+		return (is_callable($value) and ! is_string($value)) ? call_user_func($value) : $value;
+	}
+
 }
