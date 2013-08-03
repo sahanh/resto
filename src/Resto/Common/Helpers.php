@@ -117,4 +117,8 @@ class Helpers
 		return (is_callable($value) and ! is_string($value)) ? call_user_func($value) : $value;
 	}
 
+	public static function arrayIsAssoc($arr)
+	{
+		 return array_keys($arr) !== range(0, count($arr) - 1);
+	}
 }

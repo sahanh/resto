@@ -25,4 +25,10 @@ class HelpersTest extends PHPUnit_Framework_TestCase
 		$name = H::arrayGet($this->array, 'name');
 		$this->assertEquals('John', $name);
 	}
+
+	public function testArrayIsAssoc()
+	{
+		$this->assertTrue(H::arrayIsAssoc(array('first' => 'john', 'email' => 'foo@bar.com')));
+		$this->assertFalse(H::arrayIsAssoc(array('john', 'foo@bar.com')));
+	}
 }
