@@ -32,6 +32,14 @@ class Resource
 	protected $callbacks = array();
 
 	/**
+	 * Class regs
+	 */
+	protected $class_map = array(
+		'parser' => 'Resto\\Parser\\Default',
+		'errors' => 'Resto\\Exceptions\\RequestException'
+	);
+
+	/**
 	 * @param string $namespace
 	 */
 	protected function __construct($namespace)
