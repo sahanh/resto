@@ -1,5 +1,6 @@
 <?php
 namespace Resto\Parser;
+use Guzzle\Http\Message\Response;
 
 interface ParserInterface
 {
@@ -7,19 +8,13 @@ interface ParserInterface
 	 * Set Guzzle response object
 	 * @param object $response
 	 */
-	public function setResponse($response);
+	public function setResponse(Response $response);
 
 	/**
 	 * Get DATA portion from the response
 	 * @return array
 	 */
 	public function getData();
-
-	/**
-	 * Get errors from response
-	 * @return array
-	 */
-	public function getErrors();
 
 	/**
 	 * Get MetaData from response
