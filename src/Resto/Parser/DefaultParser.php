@@ -2,7 +2,9 @@
 namespace Resto\Parser;
 
 use Resto\Common\Helpers as H;
-use Resto\Exception\ParserException as Exception;
+use Exception;
+use Resto\Exception\ParserException;
+use Resto\Exception\ResponseErrorException;
 use Guzzle\Http\Message\Response;
 
 class DefaultParser implements ParserInterface
@@ -14,11 +16,16 @@ class DefaultParser implements ParserInterface
 	protected $response;
 
 	/**
-	 * Converted body, running a single json decode on response object and store it
-	 * so we don't have to do it over and over
-	 * @var array
+	 * Data from response body
+	 * @var array|object
 	 */
-	protected $body;
+	protected $data;
+
+	/**
+	 * Meta (additional fields) from response body
+	 * @var mixed
+	 */
+	protected $meta;
 
 	/**
 	 * Key references
@@ -33,8 +40,11 @@ class DefaultParser implements ParserInterface
 	{
 		$this->setResponse($response);
 
-		$body = json_decode($response->getBody(true));
-		$this->setBody($body);
+		try {
+			$this->setBody($response->json());
+		} catch (Exception $e) {
+			throw new ParserException($e->getMessage(), $e->getCode());
+		}
 	}
 
 	/**
@@ -63,21 +73,18 @@ class DefaultParser implements ParserInterface
 		return $this->setKey('meta', $name);
 	}
 
+	/**
+	 * Get data from the response
+	 * @return array
+	 */
 	public function getData()
 	{
-
+		return $this->data;
 	}
-
-
-	public function getErrors()
-	{
-
-	}
-
 
 	public function getMeta()
 	{
-
+		return $this->meta;
 	}
 
 	/**
@@ -86,18 +93,81 @@ class DefaultParser implements ParserInterface
 	 */
 	protected function setBody(array $body)
 	{
-		$this->body = $body;
-		return $this;
+		//check and throw errors
+		$this->validateErrorsInBody($body);
+
+		//if array is not assoc, means it's collection of models. We can use it directly
+		if (!H::isAssoc($body)) {
+			$this->setData($body);
+		}
+		//it has more data, better check with keys
+		else {
+			$this->data   = $this->getDataFromBody($body);
+			$this->meta   = $this->getMetaFromBody($body)
+		}
 	}
 
-	protected function getDataFromBody($key)
+	/**
+	 * Check the body using specified "data" key and return that data.
+	 * If key doesn't exists, ParserException exception will be thrown
+	 * @param  array $body
+	 * @return array
+	 */
+	protected function getDataFromBody($body)
 	{
-		return H::arrayGet($this->body, $key, false);
+		if (!array_key_exists($body, $this->getKey('data')))
+			throw new ParserException("Couldn't find data under '{key}', key doesn't exists in response.");
+
+		return H::arrayGet($body, $key);
+	}
+
+	/**
+	 * Get meta data from body using meta key(s)
+	 * @param  array $body
+	 * @return mixed
+	 */
+	public function getMetaFromBody($body)
+	{
+		if (is_array($this->getKey('meta'))) { //if meta has multiple fields, user is expecting multiple
+
+			$meta = array();
+
+			foreach ($this->getKey('meta') as $key) {
+				$meta[$key] = H::arrayGet($body, $key);
+			}
+
+			return $meta;
+
+		} else {
+			return H::arrayGet($body, $this->getKey('meta'), false);
+		}
+	}
+
+	/**
+	 * Check if errors exists in body, this is checked against key set for errors
+	 * if found, ResponseErrorException will be thrown.
+	 * @return void
+	 */
+	protected function validateErrorsInBody($body)
+	{
+		if ($errors = H::arrayGet($body, $this->getKey('errors'))) {
+			
+			if (is_array($errors))
+				$errors = array_shift($errors);
+
+			throw new ResponseErrorException($errors);	
+
+		}
 	}
 
 	protected function setKey($type, $name)
 	{
 		$this->keys[$type] = $name;
 		return $this;
+	}
+
+	protected function getKey($type)
+	{
+		return H::arrayGet($this->keys, $type);
 	}
 }
