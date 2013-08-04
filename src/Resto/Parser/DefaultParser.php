@@ -39,12 +39,6 @@ class DefaultParser implements ParserInterface
 	public function __construct(Response $response)
 	{
 		$this->setResponse($response);
-
-		try {
-			$this->setBody($response->json());
-		} catch (Exception $e) {
-			throw new ParserException($e->getMessage(), $e->getCode());
-		}
 	}
 
 	/**
@@ -79,20 +73,33 @@ class DefaultParser implements ParserInterface
 	 */
 	public function getData()
 	{
+		if (empty($this->data))
+			$this->populateBody();
+
 		return $this->data;
 	}
 
 	public function getMeta()
 	{
+		if (empty($this->data))
+			$this->populateBody();
+
 		return $this->meta;
 	}
 
 	/**
-	 * Set converted body, make sure the arraay has all the keys necessary that Query needs
+	 * Populate content from body, data will be extracted from set keys and stored in
+	 * respective properties
 	 * @param  arrays
 	 */
-	protected function setBody(array $body)
+	protected function populateBody()
 	{
+		try {
+			$body = $this->response->json();
+		} catch (Exception $e) {
+			throw new ParserException($e->getMessage(), $e->getCode());
+		}
+
 		//check and throw errors
 		$this->validateErrorsInBody($body);
 
