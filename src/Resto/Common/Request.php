@@ -31,7 +31,7 @@ class Request
 	 * HTTP Method for current request, GET/POST/PUT/DELETE
 	 * @var string
 	 */
-	protected $method;
+	protected $method = 'GET';
 
 	/**
 	 * Path to append to base url
