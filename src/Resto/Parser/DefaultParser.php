@@ -125,16 +125,18 @@ class DefaultParser implements ParserInterface
 			$return = H::arrayGet($body, $key);
 
 		//has more than single key, means it has meta + data
-		} elseif (count($keys) > 2) {
+		} elseif (count($keys) > 1) {
 			
 			//check with the key assoc to find which key has data
 			if ($key = $this->getKey('data') and !array_key_exists($this->getKey('data'), $body))
 				throw new ParserException("Couldn't find data under '{$key}', key doesn't exists in response.");
 			
 			$return = H::arrayGet($body, $this->getKey('data'));	
+
+		} else {
+			$return = $body;
 		}
 
-		
 		//assoc array, means a single entity
 		if (H::arrayIsAssoc($return)) {
 			$this->data = array($return);
@@ -150,6 +152,9 @@ class DefaultParser implements ParserInterface
 	 */
 	public function setMetaFromBody($body)
 	{
+		if (!$this->getKey('meta'))
+			return null;
+
 		if (is_array($this->getKey('meta'))) { //if meta has multiple fields, user is expecting multiple
 
 			$meta = array();
