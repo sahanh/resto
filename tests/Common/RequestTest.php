@@ -12,6 +12,14 @@ class RequestTest extends PHPUnit_Framework_TestCase
 		$this->request = new Request('http://api.example.come');
 	}
 
+	/**
+	 * @expectedException Resto\Exception\RequestException
+	 */
+	public function testInvalidRequest()
+	{
+		$this->request->execute();
+	}
+
 	public function testSetPath()
 	{
 		$request = $this->request;
