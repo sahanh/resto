@@ -70,7 +70,7 @@ class Query
 		$parsed_data = $this->execute();
 
 		$models = array();
-		foreach ($parsed_data->getData() as $model_data) {
+		foreach ((array) $parsed_data->getData() as $model_data) {
 			$model = new $this->model;
 			$model->fillRaw($model_data);
 			$models[] = $model;
