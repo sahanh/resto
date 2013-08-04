@@ -1,5 +1,5 @@
 <?php
-namespace Resto\Parser;
+namespace Resto\Parser\Response;
 
 use Resto\Common\Helpers as H;
 use Exception;

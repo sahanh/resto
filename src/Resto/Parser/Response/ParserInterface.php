@@ -1,5 +1,6 @@
 <?php
-namespace Resto\Parser;
+namespace Resto\Parser\Response;
+
 use Guzzle\Http\Message\Response;
 
 interface ParserInterface

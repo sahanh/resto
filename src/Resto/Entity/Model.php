@@ -6,7 +6,7 @@ namespace Resto\Entity;
 
 use Resto\Common\Str;
 use Resto\Common\Resource;
-use Resto\Parser\DefaultParser;
+use Resto\Parser\Response\DefaultParser;
 
 use Resto\Relations\HasMany;
 use Resto\Relations\HasOne;
