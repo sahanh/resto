@@ -87,7 +87,7 @@ class Query
 	 */
 	public function get()
 	{
-		$parsed_data = $this->execute();
+		$parsed_data = $this->getModelParser($this->execute());
 
 		$models = array();
 		foreach ((array) $parsed_data->getData() as $model_data) {
@@ -104,11 +104,15 @@ class Query
 		return $this->get()->first();
 	}
 
+	/**
+	 * Execute current request and return response
+	 * @return Guzzle\Response
+	 */
 	protected function execute()
 	{
 		$request = $this->request;
 		$request->setPath($this->path);
-		return $this->getModelParser($request->execute());
+		return $request->execute();
 	}
 
 	protected function getModelParser($response)
