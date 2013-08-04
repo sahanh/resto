@@ -1,6 +1,8 @@
 <?php
+namespace Foo;
+use Resto\Entity\Model;
 
-class SampleModelConfigured extends Resto\Entity\Model
+class SampleModelConfigured extends Model
 {
 	protected static $fillable = array(
 		'first_name',
