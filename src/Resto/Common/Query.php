@@ -50,6 +50,18 @@ class Query
 	}
 
 	/**
+	 * Add a param to request query string
+	 * @param  string $field
+	 * @param  string $value
+	 * @return self
+	 */
+	public function where($field, $value)
+	{
+		$this->request->addParam($field, $value);
+		return $this;
+	}
+
+	/**
 	 * Execute query and return data
 	 * @return Resto\Entity\Collection
 	 */
