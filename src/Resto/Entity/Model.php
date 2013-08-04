@@ -35,6 +35,11 @@ class Model
 	protected $attributes = array();
 
 
+	public static function all()
+	{
+		return static::query()->get();
+	}
+
 	public static function find($id)
 	{
 		$model = new static;
