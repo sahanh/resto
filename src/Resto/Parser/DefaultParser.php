@@ -110,42 +110,36 @@ class DefaultParser implements ParserInterface
 	/**
 	 * Check the body using specified "data" key and return that data.
 	 * If key doesn't exists, ParserException exception will be thrown
-	 * TODO: refactor logic
 	 * @param  array $body
 	 * @return array
 	 */
 	protected function setDataFromBody($body)
-	{
-		//if array is not assoc, means it's collection of models. We can use it directly
-		if (!H::arrayIsAssoc($body)) {
-			$this->data = array($body);
-		}
-		//it has more data, better check with keys
-		else {
+	{	
+		$return = false;
 
-			//response has one key, with one element
-			if ($keys = array_keys($body) and count($keys) < 2) {
-				$key  = array_shift($keys);
-				
-				//get the data out of that one element
-				if ($data = H::arrayGet($body, $key) and H::arrayIsAssoc($data)) {
-					$this->data = array($data);
-					return;
-				}	
-			}
-		
+		//body only has a single key? prolly entities are grouped under one key
+		//ie:- { tweets : [ {}, {}, {}] }
+		if (H::arrayIsAssoc($body) and $keys = array_keys($body) and count($keys) < 2) {
+			//get stuff under that key
+			$key    = array_shift($keys);
+			$return = H::arrayGet($body, $key);
+
+		//has more than single key, means it has meta + data
+		} elseif (count($keys) > 2) {
+			
+			//check with the key assoc to find which key has data
 			if ($key = $this->getKey('data') and !array_key_exists($this->getKey('data'), $body))
 				throw new ParserException("Couldn't find data under '{$key}', key doesn't exists in response.");
 			
-			$data = H::arrayGet($body, $this->getKey('data'));	
+			$return = H::arrayGet($body, $this->getKey('data'));	
+		}
 
-			//need to make sure $this->data is always an array no matter how many elements are there.
-			//Resto\Query will handle single element data
-			if (!is_array($data)) {
-				$this->data = array($data);
-			} else {
-				$this->data = $data;
-			}
+		
+		//assoc array, means a single entity
+		if (H::arrayIsAssoc($return)) {
+			$this->data = array($return);
+		} else {
+			$this->data = $return;
 		}
 	}
 
