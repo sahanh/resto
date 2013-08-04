@@ -41,7 +41,6 @@ class Model
 		$model->id = $id;
 
 		$query = static::query();
-		$query->setModel(__CLASS__);
 		$query->setPath($model->getEntityPath());
 
 		return $query->first();
@@ -62,7 +61,12 @@ class Model
 	 */
 	public static function query()
 	{
-		return static::getResource()->getQuery();
+		$model = new static;
+		$query = static::getResource()->getQuery();
+		$query->setModel(get_called_class());
+		$query->setPath($model->getCollectionPath());
+
+		return $query;
 	}
 
 	/**
