@@ -70,6 +70,21 @@ class Model
 	}
 
 	/**
+	 * static::query's default path is set to current model's collection
+	 * getModelQuery will set the path using current entity
+	 * used for entity related tasks, ie:- UPDATE/delete(oid)
+	 * @return Query
+	 */
+	public function getModelQuery()
+	{
+		$query = static::getResource()->getQuery();
+		$query->setModel(get_called_class());
+		$query->setPath($this->getEntityPath());
+		
+		return $query;
+	}
+
+	/**
 	 * Fill and make a model
 	 * @param  array $data
 	 */
