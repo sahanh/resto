@@ -97,4 +97,38 @@ class DefaultParserTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($final_meta, $parser->getMeta());
 	}
 
+	/**
+	 * @expectedException Resto\Exception\ResponseErrorException
+	 * @expectedExceptionMessage Some error occurred
+	 */
+	public function testSingleError()
+	{
+		$response = new Response(200, null, json_encode(array('errors' => 'Some error occurred')));
+		$parser   = new Parser($response);
+		$parser->getData();
+	}
+
+	/**
+	 * @expectedException Resto\Exception\ResponseErrorException
+	 * @expectedExceptionMessage error1
+	 */
+	public function testMultipleErrors()
+	{
+		$response = new Response(200, null, json_encode(array('errors' => array('error1', 'error2') )));
+		$parser   = new Parser($response);
+		$parser->getData();
+	}
+
+	/**
+	 * @expectedException Resto\Exception\ResponseErrorException
+	 * @expectedExceptionMessage error1
+	 */
+	public function testErrorsInConfiguredKey()
+	{
+		$response = new Response(200, null, json_encode(array('badstuff' => array('error1', 'error2') )));
+		$parser   = new Parser($response);
+		$parser->setErrorKey('badstuff');
+		$parser->getData();
+	}
+
 }
