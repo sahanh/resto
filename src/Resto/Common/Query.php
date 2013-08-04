@@ -37,6 +37,15 @@ class Query
 		$this->request  = $resource->getRequest();
 	}
 
+	/**
+	 * Get request object for this query
+	 * @return Resto\Common\Request
+	 */
+	public function getRequest()
+	{
+		return $this->request;
+	}
+
 	public function setPath($path)
 	{
 		$this->path = $path;
@@ -46,6 +55,17 @@ class Query
 	public function	setModel($model)
 	{
 		$this->model = $model;
+		return $this;
+	}
+
+	/**
+	 * Set the HTTP method for current query
+	 * Request::METHOD_* constants can be used
+	 * @param string $method
+	 */
+	public function setMethod($method)
+	{
+		$this->request->setMethod($method);
 		return $this;
 	}
 
@@ -87,9 +107,7 @@ class Query
 	protected function execute()
 	{
 		$request = $this->request;
-		$request->setMethod(Request::METHOD_GET);
 		$request->setPath($this->path);
-
 		return $this->getModelParser($request->execute());
 	}
 
