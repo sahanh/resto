@@ -29,6 +29,12 @@ class Query
 	protected $path;
 
 	/**
+	 * Additional query params
+	 * @var array
+	 */
+	protected $params = array();
+
+	/**
 	 * @param Resource $resource
 	 */
 	public function __construct($resource)
@@ -50,6 +56,11 @@ class Query
 	{
 		$this->path = $path;
 		return $this;
+	}
+
+	public function getPath()
+	{
+		return $this->path;
 	}
 
 	public function	setModel($model)
@@ -77,8 +88,13 @@ class Query
 	 */
 	public function where($field, $value)
 	{
-		$this->request->addParam($field, $value);
+		$this->params[$field] = $value;
 		return $this;
+	}
+
+	public function getParams()
+	{
+		return $this->params;
 	}
 
 	/**
@@ -87,7 +103,7 @@ class Query
 	 */
 	public function get()
 	{
-		$parsed_data = $this->getModelParser($this->execute());
+		$parsed_data = $this->getResponseParser($this->execute());
 
 		$models = array();
 		foreach ((array) $parsed_data->getData() as $model_data) {
@@ -110,13 +126,27 @@ class Query
 	 */
 	protected function execute()
 	{
-		$request = $this->request;
-		$request->setPath($this->path);
+		$request = $this->getRequestParser($this)->getRequest();
 		return $request->execute();
 	}
 
-	protected function getModelParser($response)
+	/**
+	 * Get parser instance to format the response
+	 * Checking model for getResponseParser and fallback to default
+	 * @param  Guzzle\Response $response
+	 */
+	protected function getResponseParser($response)
 	{
-		return call_user_func_array("{$this->model}::getParser", array($response));
+		return call_user_func_array("{$this->model}::getResponseParser", array($response));
+	}
+
+	/**
+	 * Get parser instance to format the request
+	 * Checking model for getRequestParser and fallback to default
+	 * @param  Guzzle\Response $response
+	 */
+	protected function getRequestParser($request)
+	{
+		return call_user_func_array("{$this->model}::getRequestParser", array($request));
 	}
 }

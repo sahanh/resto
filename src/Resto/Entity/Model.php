@@ -6,7 +6,9 @@ namespace Resto\Entity;
 
 use Resto\Common\Str;
 use Resto\Common\Resource;
-use Resto\Parser\Response\DefaultParser;
+use Resto\Common\Query;
+use Resto\Parser\Response\DefaultParser as DefaultResponseParser;
+use Resto\Parser\Request\DefaultParser as DefaultRequestParser;
 
 use Resto\Relations\HasMany;
 use Resto\Relations\HasOne;
@@ -205,12 +207,21 @@ class Model
 	}
 
 	/**
-	 * Return Parser
-	 * @return [type] [description]
+	 * Return response parser
+	 * @return Resto\Parser\Request\DefaultResponseParser
 	 */
-	public static function getParser($response)
+	public static function getResponseParser($response)
 	{
-		return new DefaultParser($response);
+		return new DefaultResponseParser($response);
+	}
+
+	/**
+	 * Return request parser
+	 * @return Resto\Parser\Request\DefaultRequestParser
+	 */
+	public static function getRequestParser(Query $query)
+	{
+		return new DefaultRequestParser($query);
 	}
 
 	/**
