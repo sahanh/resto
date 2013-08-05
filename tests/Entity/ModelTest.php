@@ -69,7 +69,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 
 		//params
 		$query->where('limit', 12)->where('email', 'sahan@sahanz.com');
-		$this->assertAttributeEquals(array('limit' => 12, 'email' => 'sahan@sahanz.com'), 'params', $query->getRequest());
+		$this->assertAttributeEquals(array('limit' => 12, 'email' => 'sahan@sahanz.com'), 'params', $query);
 	}
 
 	public function testModelQuery()
