@@ -84,6 +84,24 @@ class Query
 	}
 
 	/**
+	 * Get request method
+	 * @return string
+	 */
+	public function getMethod()
+	{
+		return $this->request->getMethod();
+	}
+
+	/**
+	 * Get Params
+	 * @return array
+	 */
+	public function getParams()
+	{
+		return $this->params;
+	}
+
+	/**
 	 * Add a param to request query string
 	 * @param  string $field
 	 * @param  string $value
@@ -95,9 +113,14 @@ class Query
 		return $this;
 	}
 
-	public function getParams()
+	/**
+	 * Add params from an array
+	 * @param  array $params
+	 */
+	public function addParams(array $params)
 	{
-		return $this->params;
+		$this->params = array_merge($this->params, $params);
+		return $this;
 	}
 
 	/**
