@@ -1,18 +1,33 @@
 <?php
-use Resto\Parser\Request\DefaultParser;
-use Resto\Common\Request;
+use Resto\Parser\Request\DefaultParser as Parser;
+use Resto\Common\Resource;
+use Resto\Common\Query;
 
 class DefaultRequestParserTest extends PHPUnit_Framework_TestCase
 {
-	public $request;
+	public $query;
 
 	public function setUp()
 	{
-		$this->request = new Request('/');
+		$this->query =  new Query(Resource::register('Foo'));
 	}
 
-	public function testGetDataFormatting()
+	public function testDataFormatting()
 	{
-		//$this->
+		$data  = array('foo' => 'bar', 'name' => 'john'); 
+		$query = $this->query;
+		$query->addParams($data);
+
+		$query->setMethod('POST');
+		$parser = new Parser($query);
+
+		$query->setMethod('PUT');
+		$this->assertEquals($data, $parser->getRequest()->getPostFields());
+
+		$query->setMethod('DELETE');
+		$this->assertEquals($data, $parser->getRequest()->getPostFields());
+
+		$query->setMethod('GET');
+		$this->assertEquals($data, $parser->getRequest()->getParams());
 	}
 }
