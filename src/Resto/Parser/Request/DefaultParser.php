@@ -64,24 +64,7 @@ class DefaultParser implements ParserInterface
 
 	public function getRequest()
 	{
-		switch ($this->request->getMethod()) {
-
-			case 'POST':
-					$this->setPostData();
-				break;
-
-			case 'PUT':
-					$this->setPutData();
-				break;
-
-			case 'DELETE':
-					$this->setDeleteData();
-				break;
-					
-			default:
-					$this->setGetData();
-				break;
-		}
+		$this->callDataFormatter($this->request->getMethod());
 
 		$this->request->setPath($this->query->getPath());
 		return $this->request;
