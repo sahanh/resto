@@ -1,7 +1,10 @@
 <?php
 namespace Resto\Common;
 
+use Resto\Exception\Exception as RestoException;
 use Resto\Entity\Collection;
+use Resto\Parser\Response\ParserInterface as ResponseParserInterface;
+use Resto\Parser\Request\ParserInterface as RequestParserInterface;
 
 class Query
 {
@@ -137,7 +140,13 @@ class Query
 	 */
 	protected function getResponseParser($response)
 	{
-		return call_user_func_array("{$this->model}::getResponseParser", array($response));
+		$parser = call_user_func_array("{$this->model}::getResponseParser", array($response));
+		
+		if (!$parser instanceof ResponseParserInterface) {
+			throw new RestoException("Not a valid parser, must implement Resto\Parser\Response\ParserInterface");
+		}
+
+		return $parser;
 	}
 
 	/**
@@ -147,6 +156,12 @@ class Query
 	 */
 	protected function getRequestParser($request)
 	{
-		return call_user_func_array("{$this->model}::getRequestParser", array($request));
+		$parser = call_user_func_array("{$this->model}::getRequestParser", array($request));
+
+		if (!$parser instanceof RequestParserInterface) {
+			throw new RestoException("Not a valid parser, must implement Resto\Parser\Request\ParserInterface");
+		}
+
+		return $parser;
 	}
 }
