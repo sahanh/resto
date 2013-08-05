@@ -20,6 +20,10 @@ class Request
 	const METHOD_PUT     = 'PUT';
 	const METHOD_DELETE  = 'DELETE';
 
+	/**
+	 * Guzzle client
+	 */
+	protected $client;
 
 	/**
 	 * API endpoint
@@ -46,9 +50,22 @@ class Request
 	protected $path_ext;
 
 	/**
-	 * Guzzle client
+	 * URL query params
+	 * @var array
 	 */
-	protected $client;
+	protected $params = array();
+
+	/**
+	 * Raw Body
+	 * @var string
+	 */
+	protected $body;
+ 	
+ 	/**
+ 	 * Headers
+ 	 * @var array
+ 	 */
+	protected $headers = array();
 
 	/**
 	 * Callbacks
@@ -59,10 +76,6 @@ class Request
 		'afterRequest'       => false
 	);
 
-	/**
-	 * URL query params
-	 */
-	protected $params = array();
 
 	public function __construct($endpoint, $options = array())
 	{
@@ -84,6 +97,35 @@ class Request
 		return $this;
 	}
 
+	/**
+	 * Add headers
+	 * @param string $key
+	 * @param string $value
+	 */
+	public function addHeader($key, $value)
+	{
+		$this->headers[$key]  = $value;
+		return $this;
+	}
+
+	/**
+	 * Set raw body
+	 * @param  string $body
+	 */
+	public function setBody($body)
+	{
+		$this->body = $body;
+		return $this;
+	}
+
+	/**
+	 * Get RAW Body
+	 * @return string
+	 */
+	public function getBody()
+	{
+		return $this->body;
+	}
 
 	/**
 	 * Set up an extension to request, ie: .json in api.twitter/tweets.json
@@ -93,7 +135,16 @@ class Request
 	{
 		$this->path_ext = '.'.ltrim($path_ext, '.');
 		return $this;
-	}	
+	}
+
+	/**
+	 * Get path ext
+	 * @return string|null
+	 */
+	public function getPathExt()
+	{
+		return $this->path_ext;
+	}
 
 	/**
 	 * Set HTTP method for current request
@@ -103,6 +154,24 @@ class Request
 	{
 		$this->method = $method;
 		return $this;
+	}
+
+	/**
+	 * Get HTTP Method
+	 * @return string
+	 */
+	public function getMethod()
+	{
+		return $this->method;
+	}
+
+	/**
+	 * Get params
+	 * @return array
+	 */
+	public function getParams()
+	{
+		return $this->params;
 	}
 
 	/**
@@ -152,7 +221,19 @@ class Request
 			$this->invokeCallback('initiateHttpClient', array($this, $client));
 
 			$request     = $client->$http_method($this->buildPath());
-			$request->getQuery()->merge($this->params);
+
+			//headers
+			foreach ((array) $this->headers as $name => $value) {
+				$request->setHeader($name, $value);
+			}
+
+			//params
+			if ($params = $this->getParams())
+				$request->getQuery()->merge($params);
+
+			//raw body
+			if ($body = $this->getBody())
+				$request->setBody($body);
 
 			$this->invokeCallback('beforeRequest', array($this, $request));
 
