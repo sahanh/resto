@@ -2,7 +2,7 @@
 use Guzzle\Http\Message\Response;
 use Resto\Parser\Response\DefaultParser as Parser;
 
-class DefaultParserTest extends PHPUnit_Framework_TestCase
+class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 {
 	public $data;
 
