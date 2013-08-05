@@ -56,6 +56,11 @@ class Request
 	protected $params = array();
 
 	/**
+	 * POST fields
+	 */
+	protected $post_fields = array();
+
+	/**
 	 * Raw Body
 	 * @var string
 	 */
@@ -186,6 +191,18 @@ class Request
 	}
 
 	/**
+	 * Add query parameters from an assoc array
+	 * @param Array $params
+	 */
+	public function addParams(Array $params)
+	{
+		foreach ($params as $key => $val)
+			$this->addParam($key, $val);
+
+		return $this;
+	}
+
+	/**
 	 * Remove a query parameter
 	 * @param  mixed key
 	 * @return bool
@@ -198,17 +215,52 @@ class Request
 			return false;
 	}
 
+
 	/**
-	 * Add query parameters from an assoc array
+	 * Get post fields
+	 * @return array
+	 */
+	public function getPostFields()
+	{
+		return $this->post_fields;	
+	}
+
+	/**
+	 * Add post fields to current request
+	 * @param mixed $key
+	 * @param string $value
+	 */
+	public function addPostField($key, $value)
+	{
+		$this->post_fields[$key] = $value;
+		return $this;
+	}
+
+	/**
+	 * Add psot fields from an assoc array
 	 * @param Array $params
 	 */
-	public function addParams(Array $params)
+	public function addPostFields(Array $params)
 	{
 		foreach ($params as $key => $val)
-			$this->addParam($key, $val);
+			$this->addPostField($key, $val);
 
 		return $this;
 	}
+
+	/**
+	 * Remove a post field
+	 * @param  mixed key
+	 * @return bool
+	 */
+	public function removePostField($key)
+	{
+		if (isset($this->post_fields[$key]))
+			unset($this->post_fields[$key]);
+		else
+			return false;
+	}
+
 
 	public function execute()
 	{
@@ -230,6 +282,10 @@ class Request
 			//params
 			if ($params = $this->getParams())
 				$request->getQuery()->merge($params);
+
+			//post fields
+			if ($post_fields = $this->getPostFields())
+				$request->addPostFields($post_fields);
 
 			//raw body
 			if ($body = $this->getBody())

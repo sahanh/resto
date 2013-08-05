@@ -61,6 +61,20 @@ class RequestTest extends PHPUnit_Framework_TestCase
 		$this->assertAttributeEquals(array('name' => 'john', 'last' => 'doe'), 'params', $request);
 	}
 
+	public function testPostFields()
+	{
+		$request = $this->request;
+		$request->addPostField('foo', 'bar')
+				->addPostFields(array('name' => 'john', 'last' => 'doe'));
+
+		$this->assertEquals(array('foo' => 'bar', 'name' => 'john', 'last' => 'doe'), $request->getPostFields());
+
+		$request->removePostField('foo');
+
+		$this->assertEquals(array('name' => 'john', 'last' => 'doe'), $request->getPostFields());
+	}
+
+
 	public function testBuildPath()
 	{
 		$request = $this->request;
