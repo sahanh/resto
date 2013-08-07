@@ -141,4 +141,16 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array($data), $parser->getData());
 	}
 
+	//some entities come with assoc data
+	public function testSingleAssocDataMultiLevel()
+	{
+		$data         = array_shift($this->data);
+		$data['cars'] = array('Nissan', 'Toyota', 'Cadillac');
+
+		$response = new Response(200, null, json_encode($data));
+		$parser   = new Parser($response);
+
+		$this->assertEquals(array($data), $parser->getData());
+	}
+
 }
