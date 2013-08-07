@@ -92,6 +92,16 @@ class Model
 	}
 
 	/**
+	 * Execute a DELETE to current entity path
+	 * @return [type] [description]
+	 */
+	public function delete()
+	{
+		$this->getModelQuery()->delete();
+		return true;
+	}
+
+	/**
 	 * Fill and make a model
 	 * @param  array $data
 	 */
