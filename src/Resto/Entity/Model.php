@@ -5,7 +5,9 @@
 namespace Resto\Entity;
 
 use Resto\Common\Str;
+use Resto\Common\Helpers as H;
 use Resto\Common\Resource;
+use Resto\Common\Request;
 use Resto\Common\Query;
 use Resto\Parser\Response\DefaultParser as DefaultResponseParser;
 use Resto\Parser\Request\DefaultParser as DefaultRequestParser;
@@ -59,7 +61,7 @@ class Model
 	 */
 	public function getKey()
 	{
-		return H::arrayGet($this->attributes, $key);
+		return H::arrayGet($this->attributes, static::$key);
 	}
 
 	/**
@@ -98,6 +100,31 @@ class Model
 		$query->setPath($this->getEntityPath());
 		
 		return $query;
+	}
+
+	/**
+	 * Save or update a model
+	 * POST/PUT
+	 * @return bool
+	 */
+	public function save()
+	{
+		//existing update
+		if ($this->getKey()) {
+
+			$query = $this->getModelQuery();
+			$query->setMethod(Request::METHOD_PUT);
+			$query->addParams($this->attributes);
+			$query->execute();
+
+		} else {
+
+			$query = static::query();
+			$query->setMethod(Request::METHOD_POST);
+			$query->addParams($this->attributes);
+			$query->execute();
+
+		}
 	}
 
 	/**
