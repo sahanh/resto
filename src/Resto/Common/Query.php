@@ -146,12 +146,19 @@ class Query
 		return $this->get()->first();
 	}
 
+	public function delete()
+	{
+		$this->setMethod(Request::METHOD_DELETE);
+		return $this->execute();
+	}
+
 	/**
 	 * Execute current request and return response
 	 * @return Guzzle\Response
 	 */
 	protected function execute()
 	{
+		$this->request->setPath($this->path);
 		$request = $this->getRequestParser($this)->getRequest();
 		return $request->execute();
 	}
