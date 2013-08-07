@@ -131,4 +131,13 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 		$parser->getData();
 	}
 
+	public function testSingleAssocData()
+	{
+		$data     = array_shift($this->data);
+		$response = new Response(200, null, json_encode($data));
+		$parser   = new Parser($response);
+
+		$this->assertEquals(array($data), $parser->getData());
+	}
+
 }

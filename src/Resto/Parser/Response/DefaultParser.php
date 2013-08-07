@@ -116,7 +116,7 @@ class DefaultParser implements ParserInterface
 	protected function setDataFromBody($body)
 	{	
 		$return = false;
-
+		
 		//body only has a single key? prolly entities are grouped under one key
 		//ie:- { tweets : [ {}, {}, {}] }
 		if (H::arrayIsAssoc($body) and $keys = array_keys($body) and count($keys) < 2) {
@@ -125,7 +125,7 @@ class DefaultParser implements ParserInterface
 			$return = H::arrayGet($body, $key);
 
 		//has more than single key, means it has meta + data
-		} elseif (count($keys) > 1) {
+		} elseif (H::arrayIsAssoc($body) and H::arrayIsMulti($body)) {
 			
 			//check with the key assoc to find which key has data
 			if ($key = $this->getKey('data') and !array_key_exists($this->getKey('data'), $body))
