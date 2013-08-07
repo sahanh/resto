@@ -44,14 +44,14 @@ class ModelTest extends PHPUnit_Framework_TestCase
 	public function testEntityPath()
 	{
 		$model = new SampleModel;
-		$this->assertEquals($model->getEntityPath(), 'samplemodels');
+		$this->assertEquals($model->getEntityPath(), 'sample_models');
 	}
 
 	public function testQuery()
 	{
 		Resource::register('Foo');
 		$query = Foo\SampleModelConfigured::query();
-		$this->assertAttributeEquals('samplemodelconfigureds', 'path', $query);
+		$this->assertAttributeEquals('sample_model_configureds', 'path', $query);
 		$this->assertAttributeEquals('Foo\\SampleModelConfigured', 'model', $query);
 	}
 
@@ -78,6 +78,6 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		$model = new Foo\SampleModelConfigured;
 		$model->id = 2;
 		$query = $model->getModelQuery();
-		$this->assertAttributeEquals('samplemodelconfigureds/2', 'path', $query);
+		$this->assertAttributeEquals('sample_model_configureds/2', 'path', $query);
 	}
 }

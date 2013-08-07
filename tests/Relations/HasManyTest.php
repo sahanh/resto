@@ -12,7 +12,7 @@ class HasManyTest extends PHPUnit_Framework_TestCase
 	{
 		$model     = new Foo\SampleModelWithRelation;
 		$relation  = $model->sampleModels();
-		$this->assertEquals('samplemodelwithrelations/1/samplemodels', $relation->getQueryPath());
+		$this->assertEquals('sample_model_with_relations/1/sample_models', $relation->getQueryPath());
 	}
 
 	public function testCustomRelationPath()

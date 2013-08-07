@@ -12,7 +12,7 @@ class HasOne extends PHPUnit_Framework_TestCase
 	{
 		$model     = new Foo\SampleModelWithRelation;
 		$relation  = $model->sampleModel();
-		$this->assertEquals('samplemodelwithrelations/1/samplemodel', $relation->getQueryPath());
+		$this->assertEquals('sample_model_with_relations/1/sample_model', $relation->getQueryPath());
 	}
 
 	public function testCustomRelationPath()
