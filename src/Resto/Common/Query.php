@@ -130,13 +130,7 @@ class Query
 	public function get()
 	{
 		$parsed_data = $this->getResponseParser($this->execute());
-
-		$models = array();
-		foreach ((array) $parsed_data->getData() as $model_data) {
-			$model = new $this->model;
-			$model->fillRaw($model_data);
-			$models[] = $model;
-		}
+		$models      = $this->buildModels($parsed_data->getData());
 
 		return new Collection($models, $parsed_data->getMeta());
 	}
@@ -161,6 +155,23 @@ class Query
 		$this->request->setPath($this->path);
 		$request = $this->getRequestParser($this)->getRequest();
 		return $request->execute();
+	}
+
+	/**
+	 * Build model objects from attribute array
+	 * @param  array  $data array of attributes
+	 * @return Model
+	 */
+	public function buildModels(array $data)
+	{
+		$models = array();
+		foreach ((array) $data as $model_data) {
+			$model = new $this->model;
+			$model->fillRaw($model_data);
+			$models[] = $model;
+		}
+
+		return $model;
 	}
 
 	/**
