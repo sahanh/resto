@@ -20,4 +20,10 @@ class HasOne extends Relation
 		//ie:- users/1/post
 		return implode('/', array($caller_path, $relatives_path));
 	}
+
+	public function getFromModel($attribute)
+	{
+		if ($data = $this->getInModelData($attribute))
+			return array_shift($data);
+	}
 }

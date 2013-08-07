@@ -21,4 +21,9 @@ class HasMany extends Relation
 		//ie:- users/1/posts
 		return implode('/', array($caller_path, $relatives_path));
 	}
+
+	public function getFromModel($attribute)
+	{
+		return $this->getInModelData($attribute);
+	}
 }

@@ -1,6 +1,8 @@
 <?php
 namespace Resto\Relations;
 
+use Resto\Common\Helpers as H;
+
 abstract class Relation
 {
 	/**
@@ -57,6 +59,11 @@ abstract class Relation
 		return $this;
 	}
 
+	public function getRelatingModel()
+	{
+		return $this->relating_model;
+	}
+
 	/**
 	 * Set model that initiating the relation
 	 * @param object $model
@@ -67,15 +74,12 @@ abstract class Relation
 		return $this;
 	}
 
-	public function getRelatingModel()
-	{
-		return $this->relating_model;
-	}
-
 	public function getCallingModel()
 	{
 		return $this->calling_model;
 	}
+
+
 
 	/**
 	 * Set custom URL path for HTTP request
@@ -99,6 +103,34 @@ abstract class Relation
 			return $this->custom_query_path;
 		else
 			return $this->buildQueryPath();
+	}
+
+	/**
+	 * Build relationship models using in model data
+	 * @param  string $key attribute name
+	 * @return array
+	 */
+	protected function getInModelData($key)
+	{
+		$model = $this->getCallingModel();
+
+		if ($model->attributeExists($key)) {
+
+			$data = $model->getRawAttribute($key);
+
+			if (H::arrayIsAssoc($data))
+				$data = array($data);
+
+			return $this->query->buildModels($data);
+
+		}
+
+		return false;
+	}
+
+	public function getFromModel($attribute)
+	{
+		//implemented in child
 	}
 
 	/**

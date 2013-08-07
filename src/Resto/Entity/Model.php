@@ -12,6 +12,7 @@ use Resto\Common\Query;
 use Resto\Parser\Response\DefaultParser as DefaultResponseParser;
 use Resto\Parser\Request\DefaultParser as DefaultRequestParser;
 
+use Resto\Relations\Relation;
 use Resto\Relations\HasMany;
 use Resto\Relations\HasOne;
 use Resto\Relations\BelongsTo;
@@ -312,7 +313,21 @@ class Model
 					return new HasOne($fqclass, $this, $path);
 				break;
 		}
-			
+
+	}
+
+
+
+	protected function getAttributeRelatedModels($attribute)
+	{
+		$method = Str::camel($attribute);
+
+		if (method_exists($this, $method)) {
+			if ($relation = $this->{$method}() and $relation instanceof Relation)
+				return $relation->getFromModel($attribute);
+		}
+
+		return false;
 	}
 
 	public function __set($property, $value)
@@ -322,6 +337,9 @@ class Model
 
 	public function __get($property)
 	{
-		return $this->getAttribute($property);
+		if ($data = $this->getAttributeRelatedModels($property)) {
+			return $data;
+		} else
+			return $this->getAttribute($property);
 	}
 }
