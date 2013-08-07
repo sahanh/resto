@@ -26,13 +26,42 @@ class Str {
 	}
 
 	/**
+	 * Convert a string to snake case.
+	 *
+	 * @param  string  $value
+	 * @param  string  $delimiter
+	 * @return string
+	 */
+	public static function snake($value, $delimiter = '_')
+	{
+		$replace = '$1'.$delimiter.'$2';
+
+		return ctype_lower($value) ? $value : strtolower(preg_replace('/(.)([A-Z])/', $replace, $value));
+	}
+
+	/**
+	 * Convert a value to camel case.
+	 *
+	 * @param  string  $value
+	 * @return string
+	 */
+	public static function camel($value)
+	{
+		return lcfirst(static::studly($value));
+	}
+	
+	/**
 	 * Generate collection path from a class name
 	 * @param  string $class
 	 * @return string       
 	 */
 	public static function collectionPath($class)
 	{
-		return strtolower(static::plural(static::classBasename($class)));
+		$class = static::classBasename($class);
+		$class = static::snake($class);
+		$class = static::plural($class);
+		
+		return strtolower($class);
 	}
 
 	/**
