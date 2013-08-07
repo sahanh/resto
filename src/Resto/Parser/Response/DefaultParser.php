@@ -30,7 +30,7 @@ class DefaultParser implements ParserInterface
 	/**
 	 * Key references
 	 */
-	protected $keys = array('data' => 'data', 'errors' => 'errors');
+	protected $keys = array('data' => false, 'errors' => 'errors');
 
 	/**
 	 * @param Response $response
@@ -124,15 +124,16 @@ class DefaultParser implements ParserInterface
 			$key    = array_shift($keys);
 			$return = H::arrayGet($body, $key);
 
-		//has more than single key, means it has meta + data
-		} elseif (H::arrayIsAssoc($body) and H::arrayIsMulti($body)) {
+		//if user has set a custom data key, check for that
+		} elseif ($key = $this->getKey('data')) {
 			
 			//check with the key assoc to find which key has data
-			if ($key = $this->getKey('data') and !array_key_exists($this->getKey('data'), $body))
+			if (!array_key_exists($this->getKey('data'), $body))
 				throw new ParserException("Couldn't find data under '{$key}', key doesn't exists in response.");
 			
 			$return = H::arrayGet($body, $this->getKey('data'));	
-
+		
+		//nothing to do, just take it as it is	
 		} else {
 			$return = $body;
 		}

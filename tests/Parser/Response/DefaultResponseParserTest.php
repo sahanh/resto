@@ -61,6 +61,7 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	{
 		$response = new Response(200, null, json_encode($this->assoc_data));
 		$parser   = new Parser($response);
+		$parser->setDataKey('data');
 		$parser->getData();
 	}
 
