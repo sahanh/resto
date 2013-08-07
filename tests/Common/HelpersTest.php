@@ -31,4 +31,10 @@ class HelpersTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(H::arrayIsAssoc(array('first' => 'john', 'email' => 'foo@bar.com')));
 		$this->assertFalse(H::arrayIsAssoc(array('john', 'foo@bar.com')));
 	}
+
+	public function testArrayIsMulti()
+	{
+		$this->assertTrue(H::arrayIsMulti(array('foo' => 'bar', 'bar' => array('foo' => 'bar'))));
+		$this->assertFalse(H::arrayIsMulti(array('foo' => 'bar', 'bar' => 'foo')));
+	}
 }

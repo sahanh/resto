@@ -121,4 +121,9 @@ class Helpers
 	{
 		 return array_keys($arr) !== range(0, count($arr) - 1);
 	}
+
+	public static function arrayIsMulti($array)
+	{
+		return !(count($array) == count($array, COUNT_RECURSIVE));	
+	}
 }
