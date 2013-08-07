@@ -171,7 +171,7 @@ class Query
 			$models[] = $model;
 		}
 
-		return $model;
+		return $models;
 	}
 
 	/**
