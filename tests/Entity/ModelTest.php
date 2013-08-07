@@ -80,4 +80,28 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		$query = $model->getModelQuery();
 		$this->assertAttributeEquals('sample_model_configureds/2', 'path', $query);
 	}
+
+	public function testInModelRelations()
+	{
+		$attr = array(
+			'id' => 2,
+			'first_name'    => 'Sahan',
+			'last_name'     => 'H',
+			'sample_models' => array(
+				array('first_name' => 'Sheldon', 'last_name' => 'Cooper'),
+				array('first_name' => 'Leonard', 'last_name' => 'Hofstadter')	
+			),
+ 			'sample_model'  => array('first_name' => 'Penny')
+		);
+
+		$model = new Foo\SampleModelWithRelation;
+		$model->fillRaw($attr);
+
+		$this->assertInstanceOf('Foo\\SampleModel', $model->sample_model);
+		$this->assertAttributeEquals($attr['sample_model'], 'attributes', $model->sample_model);
+
+		$this->assertContainsOnlyInstancesOf('Foo\\SampleModel', $model->sample_models);
+		$this->assertAttributeEquals($attr['sample_models'][0], 'attributes', $model->sample_models[0]);
+		$this->assertAttributeEquals($attr['sample_models'][1], 'attributes', $model->sample_models[1]);
+	}
 }
