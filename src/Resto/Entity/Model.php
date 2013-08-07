@@ -54,6 +54,15 @@ class Model
 	}
 
 	/**
+	 * Get value of PK
+	 * @return mixed
+	 */
+	public function getKey()
+	{
+		return H::arrayGet($this->attributes, $key);
+	}
+
+	/**
 	 * Get the resource instance for this model
 	 * @return Resto\Common\Resource
 	 */
