@@ -186,9 +186,29 @@ class Model
 			return $this->$mutator_method($value);
 		} else {
 			if (array_key_exists($key, $this->attributes))
-				return $this->attributes[$key];
+				return $this->getRawAttribute($key);
 		}
-			
+
+	}
+
+	/**
+	 * Get an attribute without mutation
+	 * @param  string $key
+	 * @return mixed
+	 */
+	public function getRawAttribute($key)
+	{
+		return $this->attributes[$key];
+	}
+
+	/**
+	 * Check if an attribute exists
+	 * @param  string $key
+	 * @return bool
+	 */
+	public function attributeExists($key)
+	{
+		return isset($this->attributes[$key]);	
 	}
 
 	/**
