@@ -33,3 +33,8 @@ class SampleModelWithRelation extends Model
 		return $this->hasOne('SampleModel', "samplemodels/{$this->id}/custompath2");
 	}
 }
+
+class SampleModel extends Model
+{
+
+}
