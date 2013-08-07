@@ -156,7 +156,7 @@ class Query
 	 * Execute current request and return response
 	 * @return Guzzle\Response
 	 */
-	protected function execute()
+	public function execute()
 	{
 		$this->request->setPath($this->path);
 		$request = $this->getRequestParser($this)->getRequest();
