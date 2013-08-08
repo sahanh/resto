@@ -60,17 +60,29 @@ class Query
 		return $this->request;
 	}
 
+	/**
+	 * Set path to query the api
+	 * @param string $path
+	 */
 	public function setPath($path)
 	{
 		$this->path = $path;
 		return $this;
 	}
 
+	/**
+	 * Get path
+	 * @return string
+	 */
 	public function getPath()
 	{
 		return $this->path;
 	}
 
+	/**
+	 * Set FQN for models
+	 * @param string $model
+	 */
 	public function	setModel($model)
 	{
 		$this->model = $model;
