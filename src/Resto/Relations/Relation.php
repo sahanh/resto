@@ -45,6 +45,7 @@ abstract class Relation
 		$query = $calling_model->getResource()->getQuery();
 		$query->setModel($this->getRelatingModel());
 		$query->setPath($this->getQueryPath());
+		$query->setModelCollectionPath($this->getQueryPath());
 
 		$this->query = $query;
 	}

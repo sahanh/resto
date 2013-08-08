@@ -32,6 +32,11 @@ class Query
 	protected $path;
 
 	/**
+	 * Collection path
+	 */
+	protected $model_collection_path;
+
+	/**
 	 * Additional query params
 	 * @var array
 	 */
@@ -69,6 +74,17 @@ class Query
 	public function	setModel($model)
 	{
 		$this->model = $model;
+		return $this;
+	}
+
+	/**
+	 * Set custom collection path, this will be applied to
+	 * newly created models
+	 * @param string $path
+	 */
+	public function setModelCollectionPath($path)
+	{
+		$this->model_collection_path = $path;
 		return $this;
 	}
 
@@ -168,6 +184,10 @@ class Query
 		foreach ((array) $data as $model_data) {
 			$model = new $this->model;
 			$model->fillRaw($model_data);
+
+			if ($this->model_collection_path)
+				$model->setCollectionPath($this->model_collection_path);
+
 			$models[] = $model;
 		}
 

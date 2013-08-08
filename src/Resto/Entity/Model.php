@@ -247,6 +247,15 @@ class Model
 	}
 
 	/**
+	 * Set collection path
+	 */
+	public function setCollectionPath($path)
+	{
+		$this->collection_path = $path;
+		return $this;
+	}
+
+	/**
 	 * Path of an entity instance. If not provided, generated using collection path and current
 	 * instance's id. Used to update an object.
 	 * PUT/DELETE /tickets/{id}
