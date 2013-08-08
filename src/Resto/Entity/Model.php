@@ -116,14 +116,14 @@ class Model
 			$query = $this->getModelQuery();
 			$query->setMethod(Request::METHOD_PUT);
 			$query->addParams($this->attributes);
-			$query->execute();
+			return $query->execute()->parse();
 
 		} else {
 
 			$query = static::query();
 			$query->setMethod(Request::METHOD_POST);
 			$query->addParams($this->attributes);
-			$query->execute();
+			return $query->execute()->parse();
 
 		}
 	}
@@ -134,8 +134,7 @@ class Model
 	 */
 	public function delete()
 	{
-		$this->getModelQuery()->delete();
-		return true;
+		return $this->getModelQuery()->delete();
 	}
 
 	/**
@@ -286,9 +285,9 @@ class Model
 	 * Return response parser
 	 * @return Resto\Parser\Request\DefaultResponseParser
 	 */
-	public static function getResponseParser($response)
+	public static function getResponseParser($request)
 	{
-		return new DefaultResponseParser($response);
+		return new DefaultResponseParser($request);
 	}
 
 	/**

@@ -5,6 +5,7 @@ use Resto\Common\Helpers as H;
 use Exception;
 use Resto\Exception\ParserException;
 use Resto\Exception\ResponseErrorException;
+use Resto\Common\Request;
 use Guzzle\Http\Message\Response;
 
 class DefaultParser implements ParserInterface
@@ -22,6 +23,12 @@ class DefaultParser implements ParserInterface
 	protected $data;
 
 	/**
+	 * Resto request object
+	 * @var Resto\Request
+	 */
+	protected $request;
+
+	/**
 	 * Meta (additional fields) from response body
 	 * @var mixed
 	 */
@@ -36,9 +43,9 @@ class DefaultParser implements ParserInterface
 	 * @param Response $response
 	 * @param string   $format - format of the respose so we can dedcode accordingly
 	 */
-	public function __construct(Response $response)
+	public function __construct(Request $request)
 	{
-		$this->setResponse($response);
+		$this->setRequest($request);
 	}
 
 	/**
@@ -52,16 +59,38 @@ class DefaultParser implements ParserInterface
 		return $this;
 	}
 
+	/**
+	 * Request
+	 * @param Request $request
+	 */
+	public function setRequest(Request $request)
+	{
+		$this->request = $request;
+		return $this;
+	}
+
+	/**
+	 * Set the JSON key to grab data from response
+	 * @param string $name
+	 */
 	public function setDataKey($name)
 	{
 		return $this->setKey('data', $name);
 	}
 
+	/**
+	 * Set json key that represent API based errors in response
+	 * @param string $name
+	 */
 	public function setErrorKey($name)
 	{
 		return $this->setKey('errors', $name);
 	}
 
+	/**
+	 * Set json key that represent miscellaneous data in response
+	 * @param string $name
+	 */
 	public function setMetaKey($name)
 	{
 		return $this->setKey('meta', $name);
@@ -73,38 +102,80 @@ class DefaultParser implements ParserInterface
 	 */
 	public function getData()
 	{
-		if (empty($this->data))
-			$this->populateBody();
-
 		return $this->data;
 	}
 
+	/**
+	 * Get misc data
+	 * @return string
+	 */
 	public function getMeta()
 	{
-		if (empty($this->data))
-			$this->populateBody();
-
 		return $this->meta;
 	}
 
 	/**
-	 * Populate content from body, data will be extracted from set keys and stored in
-	 * respective properties
+	 * Execute request, parse response and return data
+	 * @return mixed
+	 */
+	public function parse()
+	{
+		//we don't need to hit the API everytime parse is called
+		if (!$this->response)
+			$this->response = $this->request->execute();
+		
+		return $this->invokeParserMethod();	
+	}
+
+	/**
+	 * A GET request probably means a data read, we're parsing the response and populate data and meta keys
+	 * The caller can call getData and getMeta afterwards.
 	 * @param  arrays
 	 */
-	protected function populateBody()
+	protected function parseGetResponse()
 	{
-		try {
-			$body = $this->response->json();
-		} catch (Exception $e) {
-			throw new ParserException($e->getMessage(), $e->getCode());
-		}
+		$body = $this->decodedBody();
 
 		//check and throw errors
 		$this->validateErrorsInBody($body);
 
 		$this->setDataFromBody($body);
 		$this->setMetaFromBody($body);
+
+		return true;
+	}
+
+	/**
+	 * Since POST is an operation we're only validating errors.
+	 * HTTP based errors will throw a response exception
+	 * @return bool
+	 */
+	protected function parsePostResponse()
+	{
+		$this->validateErrorsInBody($this->decodedBody());
+		return true;
+	}
+
+	/**
+	 * Since PUT is an operation we're only validating errors.
+	 * HTTP based errors will throw a response exception
+	 * @return bool
+	 */
+	protected function parsePutResponse()
+	{
+		$this->validateErrorsInBody($this->decodedBody());
+		return true;
+	}
+
+	/**
+	 * Since DELETE is an operation we're only validating errors.
+	 * HTTP based errors will throw a response exception
+	 * @return bool
+	 */
+	protected function parseDeleteResponse()
+	{
+		$this->validateErrorsInBody($this->decodedBody());
+		return true;
 	}
 
 	/**
@@ -151,7 +222,7 @@ class DefaultParser implements ParserInterface
 	 * @param  array $body
 	 * @return mixed
 	 */
-	public function setMetaFromBody($body)
+	protected function setMetaFromBody($body)
 	{
 		if (!$this->getKey('meta'))
 			return null;
@@ -185,6 +256,34 @@ class DefaultParser implements ParserInterface
 
 			throw new ResponseErrorException($errors);	
 
+		}
+	}
+
+	/**
+	 * Call the appropriate parser method
+	 * @param  string $http_method
+	 * @return response
+	 */
+	protected function invokeParserMethod()
+	{
+		$http_method = ucfirst(strtolower($this->request->getMethod()));
+		$method      = "parse{$http_method}Response";
+		
+		if (method_exists($this, $method)) {
+			return $this->{$method}();
+		}
+	}
+
+	/**
+	 * Get decoded body (from json to array)
+	 * @return array
+	 */
+	protected function decodedBody()
+	{
+		try {
+			return $this->response->json();
+		} catch (Exception $e) {
+			throw new ParserException($e->getMessage(), $e->getCode());
 		}
 	}
 

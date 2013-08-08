@@ -157,9 +157,8 @@ class Query
 	 */
 	public function get()
 	{
-		$parsed_data = $this->getResponseParser($this->execute());
+		$parsed_data = $this->execute();
 		$models      = $this->buildModels($parsed_data->getData());
-
 		return new Collection($models, $parsed_data->getMeta());
 	}
 
@@ -171,7 +170,7 @@ class Query
 	public function delete()
 	{
 		$this->setMethod(Request::METHOD_DELETE);
-		return $this->execute();
+		return $this->execute()->parse();
 	}
 
 	/**
@@ -181,8 +180,17 @@ class Query
 	public function execute()
 	{
 		$this->request->setPath($this->path);
-		$request = $this->getRequestParser($this)->getRequest();
-		return $request->execute();
+
+		//parse request
+		$request  = $this->getRequestParser($this)->getRequest();
+
+		//parse response
+		$response = $this->getResponseParser($request);
+		
+		//execute the parsed request and populate data
+		$response->parse();
+
+		return $response;
 	}
 
 	/**
@@ -211,9 +219,9 @@ class Query
 	 * Checking model for getResponseParser and fallback to default
 	 * @param  Guzzle\Response $response
 	 */
-	protected function getResponseParser($response)
+	protected function getResponseParser($request)
 	{
-		$parser = call_user_func_array("{$this->model}::getResponseParser", array($response));
+		$parser = call_user_func_array("{$this->model}::getResponseParser", array($request));
 		
 		if (!$parser instanceof ResponseParserInterface) {
 			throw new RestoException("Not a valid parser, must implement Resto\Parser\Response\ParserInterface");
