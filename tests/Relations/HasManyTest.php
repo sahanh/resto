@@ -1,5 +1,5 @@
 <?php
-use Resto\Common\Resource;
+use Resto\Common\Module as Resource;
 
 class HasManyTest extends PHPUnit_Framework_TestCase
 {

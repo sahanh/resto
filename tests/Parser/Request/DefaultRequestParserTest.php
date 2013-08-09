@@ -1,6 +1,6 @@
 <?php
 use Resto\Parser\Request\DefaultParser as Parser;
-use Resto\Common\Resource;
+use Resto\Common\Module as Resource;
 use Resto\Common\Query;
 
 class DefaultRequestParserTest extends PHPUnit_Framework_TestCase

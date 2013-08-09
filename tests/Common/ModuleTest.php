@@ -1,9 +1,9 @@
 <?php
 use Closure;
-use Resto\Common\Resource;
+use Resto\Common\Module as Resource;
 use Foo\Bar\SampleModel as NamespacedModel;
 
-class CommonResourceTest extends PHPUnit_Framework_TestCase
+class ModuleTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @expectedException Resto\Exception\InvalidResourceException

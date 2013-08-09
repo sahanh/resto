@@ -6,7 +6,7 @@ namespace Resto\Entity;
 
 use Resto\Common\Str;
 use Resto\Common\Helpers as H;
-use Resto\Common\Resource;
+use Resto\Common\Module as Resource;
 use Resto\Common\Request;
 use Resto\Common\Query;
 use Resto\Parser\Response\DefaultParser as DefaultResponseParser;

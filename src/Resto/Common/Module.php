@@ -5,7 +5,7 @@ use Closure;
 use Resto\Exception\InvalidResourceException;
 use Resto\Common\Helpers as H;
 
-class Resource
+class Module
 {
 	/**
 	 * Resource container

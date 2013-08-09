@@ -1,7 +1,7 @@
 <?php
 namespace Resto\Relations;
 
-use Resto\Common\Resource;
+use Resto\Common\Module as Resource;
 use Resto\Common\Str;
 
 class HasOne extends Relation

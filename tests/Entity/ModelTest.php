@@ -1,5 +1,5 @@
 <?php
-use Resto\Common\Resource;
+use Resto\Common\Module as Resource;
 
 class ModelTest extends PHPUnit_Framework_TestCase
 {
