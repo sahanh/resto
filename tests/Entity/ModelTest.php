@@ -52,7 +52,7 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		Resource::register('Foo');
 		$query = Foo\SampleModelConfigured::query();
 		$this->assertAttributeEquals('sample_model_configureds', 'path', $query);
-		$this->assertAttributeEquals('Foo\\SampleModelConfigured', 'model', $query);
+		$this->assertInstanceOf('Foo\\SampleModelConfigured', $query->getModelTemplate());
 	}
 
 	//check request object of query

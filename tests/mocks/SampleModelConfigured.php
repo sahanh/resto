@@ -15,7 +15,7 @@ class SampleModelConfigured extends Model
 		$this->attributes['first_name'] = strtolower($name);
 	}
 
-	public function getFirstNameAttribute($name)
+	public function getFirstNameAttribute()
 	{
 		return strtoupper($this->attributes['first_name']);
 	}

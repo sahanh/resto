@@ -1,5 +1,6 @@
 <?php
 use Guzzle\Http\Message\Response;
+use Resto\Common\Request;
 use Resto\Parser\Response\DefaultParser as Parser;
 
 class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
@@ -27,8 +28,10 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testInvalidJsonParse()
 	{
-		$response = new Response(200, null, 'bazinga');
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse(new Response(200, null, 'bazinga'));
+		$parser->parse();
+
 		$this->assertEquals($this->data, $parser->getData());
 		$this->assertEquals(null, $parser->getMeta());
 	}
@@ -36,7 +39,10 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	public function testNonAssocDataSetParse()
 	{
 		$response = new Response(200, null, json_encode($this->data));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
+		$parser->parse();
+
 		$this->assertEquals($this->data, $parser->getData());
 		$this->assertEquals(null, $parser->getMeta());
 	}
@@ -47,7 +53,9 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 		$data['bbg_cast'] = $this->data;
 
 		$response = new Response(200, null, json_encode($data));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
+		$parser->parse();
 
 		$this->assertEquals($this->data, $parser->getData());
 		$this->assertEquals('', $parser->getMeta());
@@ -60,18 +68,24 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	public function testDataSetWithMultipleKeys()
 	{
 		$response = new Response(200, null, json_encode($this->assoc_data));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);		
 		$parser->setDataKey('data');
+		$parser->parse();
 		$parser->getData();
 	}
 
 	public function testDataSetWithConfiguredMultipleKeys()
 	{
 		$response = new Response(200, null, json_encode($this->assoc_data));
-		$parser   = new Parser($response);
+		
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
 		
 		$parser->setDataKey('bbg_cast');
 		$parser->setMetaKey('awesomeness');
+
+		$parser->parse();
 
 		$this->assertEquals($this->data, $parser->getData());
 		$this->assertEquals($this->assoc_data['awesomeness'], $parser->getMeta());
@@ -83,10 +97,13 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 		$data['seasons'] = array('total' => 8, 'episodes' => 120);
 
 		$response = new Response(200, null, json_encode($data));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
 		
 		$parser->setDataKey('bbg_cast');
 		$parser->setMetaKey(array('awesomeness', 'seasons'));
+
+		$parser->parse();
 
 		$this->assertEquals($this->data, $parser->getData());
 
@@ -105,7 +122,10 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	public function testSingleError()
 	{
 		$response = new Response(200, null, json_encode(array('errors' => 'Some error occurred')));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
+		$parser->parse();
+		
 		$parser->getData();
 	}
 
@@ -116,7 +136,9 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	public function testMultipleErrors()
 	{
 		$response = new Response(200, null, json_encode(array('errors' => array('error1', 'error2') )));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
+		$parser->parse();
 		$parser->getData();
 	}
 
@@ -127,8 +149,10 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	public function testErrorsInConfiguredKey()
 	{
 		$response = new Response(200, null, json_encode(array('badstuff' => array('error1', 'error2') )));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
 		$parser->setErrorKey('badstuff');
+		$parser->parse();
 		$parser->getData();
 	}
 
@@ -136,7 +160,9 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 	{
 		$data     = array_shift($this->data);
 		$response = new Response(200, null, json_encode($data));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
+		$parser->parse();
 
 		$this->assertEquals(array($data), $parser->getData());
 	}
@@ -148,7 +174,9 @@ class DefaultResponseParserTest extends PHPUnit_Framework_TestCase
 		$data['cars'] = array('Nissan', 'Toyota', 'Cadillac');
 
 		$response = new Response(200, null, json_encode($data));
-		$parser   = new Parser($response);
+		$parser   = new Parser(new Request(''));
+		$parser->setResponse($response);
+		$parser->parse();
 
 		$this->assertEquals(array($data), $parser->getData());
 	}
