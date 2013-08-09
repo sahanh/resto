@@ -183,7 +183,7 @@ class Model
 		$mutator_method = $this->generateGetMutatorName($key);
 		
 		if (method_exists($this, $mutator_method)) {
-			return $this->$mutator_method($value);
+			return $this->$mutator_method();
 		} else {
 			if (array_key_exists($key, $this->attributes))
 				return $this->getRawAttribute($key);
