@@ -25,6 +25,12 @@ class Model
 	protected $collection_path;
 
 	/**
+	 * Entity path, action path for a single entity
+	 */
+	protected $entity_path;
+
+
+	/**
 	 * Unique identifier key
 	 * @var string
 	 */
@@ -35,10 +41,11 @@ class Model
 	 * If specified, will be filtered before doing the API request
 	 * @var [type]
 	 */
-	protected static $fillable   = array();
+	protected static $fillable = array();
 		
-	protected $attributes = array();
+	protected $attributes      = array();
 
+	protected $original        = array();
 
 	public static function all()
 	{
@@ -76,13 +83,13 @@ class Model
 
 	/**
 	 * Get HTTP request object to add more params.
-	 * @return [type] [description]
+	 * @return Query
 	 */
 	public static function query()
 	{
 		$model = new static;
 		$query = static::getResource()->getQuery();
-		$query->setModel(get_called_class());
+		$query->setModelTemplate(new static);
 		$query->setPath($model->getCollectionPath());
 
 		return $query;
@@ -96,8 +103,7 @@ class Model
 	 */
 	public function getModelQuery()
 	{
-		$query = static::getResource()->getQuery();
-		$query->setModel(get_called_class());
+		$query = static::query();
 		$query->setPath($this->getEntityPath());
 		
 		return $query;
@@ -255,6 +261,16 @@ class Model
 	}
 
 	/**
+	 * Set entity path
+	 * @param string $path
+	 */
+	public function setEntityPath($path)
+	{
+		$this->entity_path = $path;
+		return $this;
+	}
+
+	/**
 	 * Path of an entity instance. If not provided, generated using collection path and current
 	 * instance's id. Used to update an object.
 	 * PUT/DELETE /tickets/{id}
@@ -262,6 +278,9 @@ class Model
 	 */
 	public function getEntityPath()
 	{
+		if ($this->entity_path)
+			return $this->entity_path;
+
 		$parts   = array();
 		$parts[] = $this->getCollectionPath();
 
