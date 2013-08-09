@@ -21,6 +21,20 @@ class HasOne extends Relation
 		return implode('/', array($caller_path, $relatives_path));
 	}
 
+	/**
+	 * Has one relation's model should have same path for
+	 * collection and entity
+	 * @return Model
+	 */
+	public function getModelTemplate()
+	{
+		$model = new $this->relating_model;
+		$model->setCollectionPath($this->getQueryPath());
+		$model->setEntityPath($this->getQueryPath());
+
+		return $model;
+	}
+
 	public function getFromModel($attribute)
 	{
 		if ($data = $this->getInModelData($attribute))
