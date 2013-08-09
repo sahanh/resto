@@ -12,7 +12,7 @@ class Query
 	 * Target model name, this model class will be used to build results
 	 * @var string
 	 */
-	protected $model;
+	protected $model_template;
 
 	/**
 	 * Resource
@@ -80,13 +80,18 @@ class Query
 	}
 
 	/**
-	 * Set FQN for models
-	 * @param string $model
+	 * Set template for models
+	 * @param object $model
 	 */
-	public function	setModel($model)
+	public function	setModelTemplate($model)
 	{
-		$this->model = $model;
+		$this->model_template = $model;
 		return $this;
+	}
+
+	public function getModelTemplate()
+	{
+		return $this->model_template;
 	}
 
 	/**
@@ -202,7 +207,7 @@ class Query
 	{
 		$models = array();
 		foreach ((array) $data as $model_data) {
-			$model = new $this->model;
+			$model = clone $this->getModelTemplate();
 			$model->fillRaw($model_data);
 
 			if ($this->model_collection_path)
@@ -221,7 +226,8 @@ class Query
 	 */
 	protected function getResponseParser($request)
 	{
-		$parser = call_user_func_array("{$this->model}::getResponseParser", array($request));
+		$model  = get_class($this->model_template);
+		$parser = call_user_func_array("{$model}::getResponseParser", array($request));
 		
 		if (!$parser instanceof ResponseParserInterface) {
 			throw new RestoException("Not a valid parser, must implement Resto\Parser\Response\ParserInterface");
@@ -237,7 +243,8 @@ class Query
 	 */
 	protected function getRequestParser($request)
 	{
-		$parser = call_user_func_array("{$this->model}::getRequestParser", array($request));
+		$model  = get_class($this->model_template);
+		$parser = call_user_func_array("{$model}::getRequestParser", array($request));
 
 		if (!$parser instanceof RequestParserInterface) {
 			throw new RestoException("Not a valid parser, must implement Resto\Parser\Request\ParserInterface");
