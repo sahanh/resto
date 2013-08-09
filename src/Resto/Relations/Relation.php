@@ -42,10 +42,11 @@ abstract class Relation
 		if ($path)
 			$this->setQueryPath($path);
 
+		$model_template = $this->getModelTemplate();
+
 		$query = $calling_model->getResource()->getQuery();
-		$query->setModel($this->getRelatingModel());
+		$query->setModelTemplate($model_template);
 		$query->setPath($this->getQueryPath());
-		$query->setModelCollectionPath($this->getQueryPath());
 
 		$this->query = $query;
 	}
@@ -141,6 +142,18 @@ abstract class Relation
 	protected function buildQueryPath()
 	{
 		
+	}
+
+	/**
+	 * Return model template to generate models after query
+	 * @return Model
+	 */
+	protected function getModelTemplate()
+	{
+		$model = new $this->relating_model;
+		$model->setCollectionPath($this->getQueryPath());
+
+		return $model;
 	}
 
 	public function __call($method, $args)
