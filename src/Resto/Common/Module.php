@@ -4,6 +4,7 @@ namespace Resto\Common;
 use Closure;
 use Resto\Exception\InvalidResourceException;
 use Resto\Common\Helpers as H;
+use Resto\Exception\Exception;
 
 class Module
 {
@@ -32,11 +33,12 @@ class Module
 	protected $callbacks = array();
 
 	/**
-	 * Class regs
+	 * Custom class mapping
 	 */
-	protected $class_map = array(
-		'parser' => 'Resto\\Parser\\Default',
-		'errors' => 'Resto\\Exceptions\\RequestException'
+	protected $classes = array(
+		'Collection'     => 'Resto\\Common\\Collection',
+		'ResponseParser' => 'Resto\\Parser\\Response\\DefaultParser',
+		'RequestParser'  => 'Resto\\Parser\\Request\\DefaultParser'
 	);
 
 	/**
@@ -148,6 +150,54 @@ class Module
 	public function getCallback($name)
 	{
 		return H::arrayGet($this->callbacks, $name, false);
+	}
+
+	/**
+	 * Register a system wide class.
+	 * Custom classes can be assigned for Model Collections,
+	 * Parser
+	 * @param  string $type
+	 * @param  string $fqcn - Fully qualified class name
+	 * @return void
+	 */
+	public function registerClass($type, $class)
+	{		
+		if ( !array_key_exists($type, $this->classes) )
+			throw new Exception("{$type} is not a valid class type to register");
+
+		$this->classes[$type] = $class;
+	}
+
+	/**
+	 * Get registered class name
+	 * @param  string $type
+	 * @return void
+	 */
+	public function getRegisteredClass($type)
+	{
+		return H::arrayGet($this->classes, $type, false);
+	}
+
+	/**
+	 * Register a custom response parser for the entire resource.
+	 * This will be overridden by model's parser definitions
+	 * @param  string $class
+	 * @return void
+	 */
+	public function registerResponseParser($class)
+	{
+		$this->registerClass('ResponseParser', $class);
+	}
+
+	/**
+	 * Register a custom request parser for the entire resource.
+	 * This will be overridden by model's parser definitions
+	 * @param  string $class
+	 * @return void
+	 */
+	public function registerRequestParser($class)
+	{
+		$this->registerClass('RequestParser', $class);
 	}
 
 	/**

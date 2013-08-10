@@ -82,4 +82,16 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 		$this->assertAttributeEquals('https://example.com', 'endpoint', $req); //endpoint should remove end /
 	}
 
+	public function testRegisterClass()
+	{
+		$res = Resource::register('Foo\\Bar');
+		$res->registerClass('Collection', 'Foo\\Collection');
+		$res->registerClass('ResponseParser', 'Foo\\Response');
+		$res->registerClass('RequestParser', 'Foo\\Request');
+		
+		$this->assertEquals('Foo\\Collection', $res->getRegisteredClass('Collection'));
+		$this->assertEquals('Foo\\Response', $res->getRegisteredClass('ResponseParser'));
+		$this->assertEquals('Foo\\Request', $res->getRegisteredClass('RequestParser'));
+	}
+
 }
