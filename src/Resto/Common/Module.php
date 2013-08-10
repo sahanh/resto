@@ -36,7 +36,7 @@ class Module
 	 * Custom class mapping
 	 */
 	protected $classes = array(
-		'Collection'     => 'Resto\\Common\\Collection',
+		'Collection'     => 'Resto\\Entity\\Collection',
 		'ResponseParser' => 'Resto\\Parser\\Response\\DefaultParser',
 		'RequestParser'  => 'Resto\\Parser\\Request\\DefaultParser'
 	);
