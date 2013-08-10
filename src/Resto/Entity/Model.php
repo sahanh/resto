@@ -344,7 +344,11 @@ class Model
 	}
 
 
-
+	/**
+	 * If attribute has a relationship defined, generate the models
+	 * @param  string $attribute
+	 * @return mixed - depends on the relation. usually single model or collection
+	 */
 	protected function getAttributeRelatedModels($attribute)
 	{
 		$method = Str::camel($attribute);
