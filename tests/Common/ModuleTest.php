@@ -94,4 +94,14 @@ class ModuleTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('Foo\\Request', $res->getRegisteredClass('RequestParser'));
 	}
 
+	/**
+	 * @expectedException Resto\Exception\Exception
+	 * @expectedExceptionMessage Foo is not a valid class type to register
+	 */
+	public function testInvalidClassRegister()
+	{
+		$res = Resource::register('Foo\\Bar');
+		$res->registerClass('Foo', 'Foo\\Collection');
+	}
+
 }
