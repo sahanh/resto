@@ -1,18 +1,14 @@
 {
-	"name": "sahanz/resto",
+	"name": "sahanh/resto",
     "type": "library",
     "description": "Resto is an ORM for REST like webservices",
-    "keywords": ["ormd", "rest", "web service"],
+    "keywords": ["orm", "rest", "web service", "api"],
     "license": "MIT",
     "authors": [
         {
             "name": "Sahan H",
             "email": "sahan@sahanz.com",
-            "homepage": "https://github.com/sahanz"
-        },
-        {
-            "name": "Community",
-            "homepage": "https://github.com/sahanz/resto/contributors"
+            "homepage": "https://github.com/sahanh"
         }
     ],
 	"require" : {
