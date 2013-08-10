@@ -9,8 +9,6 @@ use Resto\Common\Helpers as H;
 use Resto\Common\Module as Resource;
 use Resto\Common\Request;
 use Resto\Common\Query;
-use Resto\Parser\Response\DefaultParser as DefaultResponseParser;
-use Resto\Parser\Request\DefaultParser as DefaultRequestParser;
 
 use Resto\Relations\Relation;
 use Resto\Relations\HasMany;
@@ -306,7 +304,8 @@ class Model
 	 */
 	public static function getResponseParser($request)
 	{
-		return new DefaultResponseParser($request);
+		$class = static::getResource()->getRegisteredClass('ResponseParser');
+		return new $class($request);
 	}
 
 	/**
@@ -315,7 +314,8 @@ class Model
 	 */
 	public static function getRequestParser(Query $query)
 	{
-		return new DefaultRequestParser($query);
+		$class = static::getResource()->getRegisteredClass('RequestParser');
+		return new $class($query);
 	}
 
 	/**
