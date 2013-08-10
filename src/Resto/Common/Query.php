@@ -164,7 +164,7 @@ class Query
 	{
 		$parsed_data = $this->execute();
 		$models      = $this->buildModels($parsed_data->getData());
-		return new Collection($models, $parsed_data->getMeta());
+		return $this->buildCollection($models, $parsed_data->getMeta());
 	}
 
 	public function first()
@@ -217,6 +217,18 @@ class Query
 		}
 
 		return $models;
+	}
+
+	/**
+	 * Build a collection of models
+	 * @param  array $models
+	 * @param  array  $meta
+	 * @return Resto\Entity\Collection
+	 */
+	public function buildCollection($models, $meta = array())
+	{
+		$class = $this->resource->getRegisteredClass('Collection');
+		return new $class($models, $meta);
 	}
 
 	/**
