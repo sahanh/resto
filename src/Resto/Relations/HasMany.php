@@ -3,6 +3,7 @@ namespace Resto\Relations;
 
 use Resto\Common\Module as Resource;
 use Resto\Common\Str;
+use Resto\Entity\Collection;
 
 class HasMany extends Relation
 {
@@ -24,6 +25,6 @@ class HasMany extends Relation
 
 	public function getFromModel($attribute)
 	{
-		return $this->getInModelData($attribute);
+		return new Collection($this->getInModelData($attribute));
 	}
 }
