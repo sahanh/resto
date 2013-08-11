@@ -116,20 +116,15 @@ class Model
 	{
 		//existing update
 		if ($this->getKey()) {
-
 			$query = $this->getModelQuery();
 			$query->setMethod(Request::METHOD_PUT);
-			$query->addParams($this->attributes);
-			return $query->execute()->parse();
-
 		} else {
-
 			$query = static::query();
 			$query->setMethod(Request::METHOD_POST);
-			$query->addParams($this->attributes);
-			return $query->execute()->parse();
-
 		}
+
+		$query->addParams($this->attributes);
+		return $query->execute()->parse();
 	}
 
 	/**
