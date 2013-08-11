@@ -298,6 +298,21 @@ class Model
 		return $this->generateRelation('HasOne', $class, $path);
 	}
 
+	public function toArray()
+	{
+		$attributes = array();
+		foreach (array_keys($this->attributes) as $key) {
+			$attributes[$key] = $this->getAttribute($key);
+		}
+
+		return $attributes;
+	}
+
+	public function toJson()
+	{
+		return json_encode($this->toArray());
+	}
+
 	/**
 	 * Return response parser
 	 * @return Resto\Parser\Request\DefaultResponseParser
