@@ -26,10 +26,12 @@ class ModelTest extends PHPUnit_Framework_TestCase
 	public function testFill()
 	{
 		$data  = array('id' => 2, 'first_name' => 'Sahan', 'last_name' => 'H');
-		$model = new SampleModel;
-		$model->fillRaw($data);
 
-		$this->assertAttributeEquals($data, 'attributes', $model);
+		//model has a mutator
+		$model = new Foo\SampleModelConfigured;
+		$model->fill($data);
+
+		$this->assertAttributeEquals(array('id' => 2, 'first_name' => 'sahan', 'last_name' => 'H'), 'attributes', $model);
 	}
 
 	public function testGetSetAttributeWithMutator()
@@ -103,5 +105,15 @@ class ModelTest extends PHPUnit_Framework_TestCase
 		$this->assertContainsOnlyInstancesOf('Foo\\SampleModel', $model->sample_models);
 		$this->assertAttributeEquals($attr['sample_models'][0], 'attributes', $model->sample_models[0]);
 		$this->assertAttributeEquals($attr['sample_models'][1], 'attributes', $model->sample_models[1]);
+	}
+
+	public function testToArrayAndJson()
+	{
+		$data   = array('first_name' => 'Sahan', 'last_name' => 'H', 'email' => 'sahan@sahanz.com');
+		$expect = array('first_name' => 'SAHAN', 'last_name' => 'H', 'email' => 'sahan@sahanz.com');
+		$model = new Foo\SampleModelConfigured;
+		$model->fill($data);
+		$this->assertEquals($expect, $model->toArray());
+		$this->assertEquals(json_encode($expect), $model->toJson());
 	}
 }
