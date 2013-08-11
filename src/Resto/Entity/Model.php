@@ -327,7 +327,7 @@ class Model
 	 * Return request parser
 	 * @return Resto\Parser\Request\DefaultRequestParser
 	 */
-	public static function getRequestParser(Query $query)
+	public static function getRequestParser($query)
 	{
 		$class = static::getResource()->getRegisteredClass('RequestParser');
 		return new $class($query);
