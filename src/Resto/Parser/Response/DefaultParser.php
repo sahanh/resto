@@ -209,8 +209,10 @@ class DefaultParser implements ParserInterface
 			$return = $body;
 		}
 
+		if (empty($return))
+			$this->data = array();
 		//assoc array, means a single entity
-		if (H::arrayIsAssoc($return)) {
+		elseif (H::arrayIsAssoc($return)) {
 			$this->data = array($return);
 		} else {
 			$this->data = $return;
