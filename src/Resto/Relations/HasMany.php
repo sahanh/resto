@@ -4,6 +4,7 @@ namespace Resto\Relations;
 use Resto\Common\Module as Resource;
 use Resto\Common\Str;
 use Resto\Entity\Collection;
+use Resto\Entity\Model;
 
 class HasMany extends Relation
 {
@@ -26,5 +27,15 @@ class HasMany extends Relation
 	public function getFromModel($attribute)
 	{
 		return new Collection($this->getInModelData($attribute));
+	}
+
+	/**
+	 * Insert a related model
+	 * @return [type] [description]
+	 */
+	public function insert(Model $model)
+	{
+		$model->setCollectionPath($this->buildQueryPath());
+		return $model->save();
 	}
 }
