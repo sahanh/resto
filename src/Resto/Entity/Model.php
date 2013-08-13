@@ -114,17 +114,23 @@ class Model
 	 */
 	public function save()
 	{
+		$query = $this->getModelQuery();
+
 		//existing update
 		if ($this->getKey()) {
-			$query = $this->getModelQuery();
-			$query->setMethod(Request::METHOD_PUT);
-		} else {
-			$query = static::query();
-			$query->setMethod(Request::METHOD_POST);
-		}
 
-		$query->addParams($this->attributes);
-		return $query->execute()->parse();
+			$query->setMethod(Request::METHOD_PUT);
+			$query->addParams($this->attributes);
+			return $query->execute()->parse();
+
+		} else {
+
+			$query->setPath($this->getCollectionPath());
+			$query->setMethod(Request::METHOD_POST);
+			$query->addParams($this->attributes);
+			return $query->execute()->parse();
+
+		}
 	}
 
 	/**
