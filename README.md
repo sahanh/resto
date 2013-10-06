@@ -92,38 +92,38 @@ Include these configuration setup inside a bootstrap file and include in startup
 
 ##Introduction to each component
 
-*Modules*
+###Modules
 http://d.pr/i/fYSm
 To make it possible to manage few different APIs at once, Resto uses modules. Each API and it's models should be created under a namespaced directory and Resto will use the namespace to identify each module. Once a module is registered, it can be accessed at anytime to set configuration options such as API endpoint, API auth options etc.
 
-*Query*
+###Query
 Query class generate requests and execute them. Query class is the middle man between API requests and Models.
 
-*Request*
+###Request
 Under the hood, Query class uses a Request class to build up each request. Request class is the main transporter. Query class is tighly coupled with a specific Module while Request class isn't.
 
-*Parsers*
+###Parsers
 Resto uses parsers to format data before it leaves the app and after response come.
 
-Request Parser
+###Request Parser
 When a new query is being executed, it runs through a request parser before execution. Request parser receives the Query object with Request object. Parser then modify the Request object accordingly. Say when doing a PUT request your API needs a xml body, you can create a request parser to do this.
 
-Response Parser
+###Response Parser
 Like the request parsers, Query object runs a response that comes after a request through a response. After each request query class needs data in an array and reponse parsers make sure that Query class receives what he needs.
 
 By default Resto works with JSON outputs and for POST\PUT post fields are used. However you can create your own parsers to work with XML, or any other specific format and register it under a specific module.
 
-*Relations*
+###Relations
 Models can have relations with other models.
 
-*Errors*
+###Errors
 The default response parser check the response body for "errors" key and create `Resto\Exception\ResponseErrorException`s.
 
 ============
 
 ###Module ``Resto\Common\Module``
 
-http://d.pr/i/fYSm
+![screen](http://d.pr/i/fYSm "Different modules")
 
 Before using set of models under an API, it should be registered as a module. Resto takes a namespace approach for this, so all your models should be inside a namespaced directory. Namespace will be used to identify the specific module. Make sure your app can autoload these models under the given namespace.
 
