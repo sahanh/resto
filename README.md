@@ -10,6 +10,13 @@ With Resto you can,
 
 ##Quick Start
 
+####Install using composer
+    "require" {
+    	"sahanh/resto": "dev-master"
+    }
+
+and `composer install`
+
 Consider an API of XYZ.com which has, Posts, Users. User has many posts. The API use a key to validate every request.
 
 ####Setup a project
@@ -123,7 +130,7 @@ The default response parser check the response body for "errors" key and create 
 
 ###Module ``Resto\Common\Module``
 
-![screen](http://d.pr/i/fYSm "Different modules")
+![screen](http://d.pr/i/fYSm+ "Different modules")
 
 Before using set of models under an API, it should be registered as a module. Resto takes a namespace approach for this, so all your models should be inside a namespaced directory. Namespace will be used to identify the specific module. Make sure your app can autoload these models under the given namespace.
 
