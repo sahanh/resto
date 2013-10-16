@@ -167,11 +167,30 @@ class Query
 		return $this->buildCollection($models, $parsed_data->getMeta());
 	}
 
+	/**
+	 * Query a single entity of a resource, id will be passed to collection path
+	 * ie:- users/1/posts/{id}
+	 * @param  mixed $id
+	 * @return Resto\Entity\Model
+	 */
+	public function find($id)
+	{
+		$this->path = implode('/', array($this->path, $id));
+		return $this->get()->first();
+	}
+
+	/**
+	 * Get the first record out of a query
+	 * @return Resto\Entity\Model
+	 */
 	public function first()
 	{
 		return $this->get()->first();
 	}
 
+	/**
+	 * Delete a entity
+	 */
 	public function delete()
 	{
 		$this->setMethod(Request::METHOD_DELETE);
