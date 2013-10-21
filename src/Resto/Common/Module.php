@@ -68,7 +68,7 @@ class Module
 	public static function resolve($namespace)
 	{
 		if (!static::exists($namespace))
-			throw new InvalidResourceException("No registered resource found. Use Resto\\Common\\Resource::register('{$namespace}')");
+			throw new InvalidResourceException("No registered resource found under for {$namespace}");
 
 		return static::$resources[$namespace];
 	}
