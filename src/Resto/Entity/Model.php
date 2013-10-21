@@ -15,6 +15,8 @@ use Resto\Relations\HasMany;
 use Resto\Relations\HasOne;
 use Resto\Relations\BelongsTo;
 
+use Resto\Exception\InvalidResourceException;
+
 class Model
 {
 	/**
@@ -76,7 +78,12 @@ class Model
 	 */
 	public static function getResource()
 	{
-		return Resource::resolve(get_called_class());
+		$namespace = Str::classNamespace(get_called_class());
+
+		if (!$namespace)
+			throw new InvalidResourceException('Model must be inside a namespace.');
+
+		return Resource::resolve($namespace);
 	}
 
 	/**

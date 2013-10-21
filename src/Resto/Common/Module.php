@@ -67,11 +67,6 @@ class Module
 	 */
 	public static function resolve($namespace)
 	{
-		$namespace = static::extractNamespaceFromClass($namespace);
-
-		if (!$namespace)
-			throw new InvalidResourceException('Model must be inside a namespace.');
-
 		if (!static::exists($namespace))
 			throw new InvalidResourceException("No registered resource found. Use Resto\\Common\\Resource::register('{$namespace}')");
 
@@ -198,19 +193,5 @@ class Module
 	public function registerRequestParser($class)
 	{
 		$this->registerClass('RequestParser', $class);
-	}
-
-	/**
-	 * Extract the namespace out of fully qualified class name
-	 * @param  string $class
-	 * @return mixed
-	 */
-	protected static function extractNamespaceFromClass($class)
-	{
-		if (strpos($class, '\\') === false)
-			return false;
-
-		$actual_class = Str::classBasename($class);
-		return str_replace("\\{$actual_class}", '', $class);
 	}
 }

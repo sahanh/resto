@@ -74,4 +74,18 @@ class Str {
 		return basename(str_replace('\\', '/', $class));
 	}
 
+	/**
+	 * Get namespace from a FQN
+	 * @param  string $class
+	 * @return bool|
+	 */
+	public static function classNamespace($class)
+	{
+		if (strpos($class, '\\') === false)
+			return false;
+
+		$actual_class = Str::classBasename($class);
+		return str_replace("\\{$actual_class}", '', $class);
+	}
+
 }
