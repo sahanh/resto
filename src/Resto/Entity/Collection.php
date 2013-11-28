@@ -84,4 +84,11 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
         return new ArrayIterator($this->items);
     }
 
+    public function toArray()
+    {
+    	return array_map(function($value)
+    	{
+    		return is_callable([$value, 'toArray']) ? $value->toArray() : $value;
+    	}, $this->items);
+    }
 }
