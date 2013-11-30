@@ -119,7 +119,7 @@ class Helpers
 
 	public static function arrayIsAssoc($arr)
 	{
-		 return array_keys($arr) !== range(0, count($arr) - 1);
+		 return !empty($arr) and array_keys($arr) !== range(0, count($arr) - 1);
 	}
 
 	public static function arrayIsMulti($array)
