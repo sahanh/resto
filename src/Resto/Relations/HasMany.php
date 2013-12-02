@@ -18,7 +18,9 @@ class HasMany extends Relation
 		$caller_path    = $this->getCallingModel()->getEntityPath();
 
 		//ie:- posts
-		$relatives_path = Str::collectionPath($this->getRelatingModel());
+		$related_model  = $this->getRelatingModel();
+		$related_model  = new $related_model;
+		$relatives_path = $related_model->getCollectionPath();
 
 		//ie:- users/1/posts
 		return implode('/', array($caller_path, $relatives_path));
